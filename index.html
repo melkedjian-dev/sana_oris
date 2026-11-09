@@ -1,0 +1,535 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"></head><body><title>Étude de cas RAF Sana Oris</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Mise en page : une présentation en diapositives, navigation fixe en haut, contenu en colonne unique sur mobile.
+   Palette Sana Oris : bleu marine profond et cuivre, couleurs sémantiques (alerte, retard, ok, en cours, bloqué) séparées. */
+:root{
+  --bg:#F5F6F8; --surface:#FFFFFF; --ink:#0C1D2C; --muted:#52606D; --line:#DDE2E7;
+  --accent:#A8601F; --accent-ink:#FFFFFF; --copper:#D38D54; --soft:#F8EDE0;
+  --warn:#8A5200; --warn-bg:#FCEBCB; --bad:#9C1C1C; --bad-bg:#F8D9D9; --ok:#1D6B3A; --ok-bg:#D5EEDD; --idle:#4A5459; --idle-bg:#E4E9EA;
+  --info:#1E5A8A; --info-bg:#DCEBF7; --blk:#5B2A86; --blk-bg:#E8DDF3;
+  --d-fiscal:#F0CBA8; --d-social:#BFD3E6; --d-compta:#D3D9E8; --d-pilot:#E0D3EC; --d-clot:#F4E3A1; --d-jur:#CFE3C6; --d-ass:#EBCADB;
+  --font-display:"Cormorant Garamond","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --font-body:"DM Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#081724; --surface:#0C1D2C; --ink:#F2ECE6; --muted:#A4B1BD; --line:#1E3548;
+  --accent:#D38D54; --accent-ink:#0C1D2C; --copper:#D38D54; --soft:#14293A;
+  --warn:#F0B04D; --warn-bg:#44320F; --bad:#F29B9B; --bad-bg:#4A1E24; --ok:#7BD8A2; --ok-bg:#153C2B; --idle:#B4C4C8; --idle-bg:#1E3548;
+  --info:#8CC4F0; --info-bg:#173A57; --blk:#CDB0EE; --blk-bg:#35214D;
+  --d-fiscal:#7A4B2B; --d-social:#255A62; --d-compta:#2F4570; --d-pilot:#47397A; --d-clot:#6F5C16; --d-jur:#2F5F2B; --d-ass:#6F3558; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#081724; --surface:#0C1D2C; --ink:#F2ECE6; --muted:#A4B1BD; --line:#1E3548;
+  --accent:#D38D54; --accent-ink:#0C1D2C; --copper:#D38D54; --soft:#14293A;
+  --warn:#F0B04D; --warn-bg:#44320F; --bad:#F29B9B; --bad-bg:#4A1E24; --ok:#7BD8A2; --ok-bg:#153C2B; --idle:#B4C4C8; --idle-bg:#1E3548;
+  --info:#8CC4F0; --info-bg:#173A57; --blk:#CDB0EE; --blk-bg:#35214D;
+  --d-fiscal:#7A4B2B; --d-social:#255A62; --d-compta:#2F4570; --d-pilot:#47397A; --d-clot:#6F5C16; --d-jur:#2F5F2B; --d-ass:#6F3558; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--font-display);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:clamp(2rem,4.6vw,3.1rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:var(--font-mono)}
+.eyebrow{font-family:var(--font-mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:500}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surface);z-index:30}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line);
+  margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.nav-in{max-width:1120px;margin:0 auto;display:flex;gap:6px;align-items:center;overflow-x:auto;padding-block:10px;scrollbar-width:thin}
+.brand{font-family:var(--font-display);font-size:1.15rem;font-weight:700;margin-right:10px;white-space:nowrap}
+.tab{appearance:none;border:1px solid transparent;background:none;color:var(--muted);font:500 .9rem var(--font-body);padding:7px 12px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.tab:hover{background:var(--soft);color:var(--ink)}
+.tab[aria-current="true"]{background:var(--ink);color:var(--bg)}
+.tab:focus-visible,.chip:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.slide{display:none;padding-block:44px 24px}
+.slide.on{display:block}
+.head{display:grid;gap:12px;margin-bottom:28px;max-width:760px}
+.lead{font-size:1.1rem;color:var(--muted);max-width:62ch}
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .95rem var(--font-body);padding:10px 16px;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.hint{font-size:.82rem;color:var(--muted)}
+/* hero */
+.hero{display:grid;gap:28px;grid-template-columns:1.25fr 1fr;align-items:end}
+.hero h1{font-size:clamp(2.8rem,8vw,5.8rem);font-weight:700}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.who{display:grid;gap:4px}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:36px}
+.pillar{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:8px}
+.pillar b{font-family:var(--font-display);font-size:1.15rem}
+/* shared */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.card h3{margin-bottom:8px}
+.pill{display:inline-block;font:600 .74rem var(--font-body);padding:3px 9px;border-radius:99px;white-space:nowrap}
+.s-retard{background:var(--bad-bg);color:var(--bad)}.s-traiter{background:var(--warn-bg);color:var(--warn)}.s-planifie{background:var(--ok-bg);color:var(--ok)}.s-fait{background:var(--ok-bg);color:var(--ok)}.s-aplanifier{background:var(--idle-bg);color:var(--idle)}.s-encours{background:var(--info-bg);color:var(--info)}.s-bloque{background:var(--blk-bg);color:var(--blk)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.kpi{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 14px}
+.kpi b{display:block;font:700 2.1rem var(--font-display);font-variant-numeric:tabular-nums}
+.kpi span{font-size:.82rem;color:var(--muted)}
+.kpi.bad b{color:var(--bad)}.kpi.warn b{color:var(--warn)}.kpi.ok b{color:var(--ok)}
+.bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--idle-bg);margin-bottom:18px}
+.bar i{display:block}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 .82rem var(--font-body);padding:5px 11px;border-radius:99px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+label.f{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+input[type=date],input[type=number],select{font:500 .95rem var(--font-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.9rem}
+th{font:500 .72rem var(--font-mono);text-transform:uppercase;letter-spacing:.08em;text-align:left;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.row{cursor:pointer}tr.row:hover td{background:var(--soft)}
+tr.det td{background:var(--soft);padding:14px 16px}
+.det dl{display:grid;grid-template-columns:140px 1fr;gap:6px 14px;margin:0}
+.det dt{font:500 .74rem var(--font-mono);text-transform:uppercase;color:var(--muted)}.det dd{margin:0}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+/* plan */
+.steps{display:grid;gap:10px}
+.step{display:grid;grid-template-columns:110px 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.step .when{font:500 .8rem var(--font-mono);color:var(--accent)}
+.step small{color:var(--muted);display:block;margin-top:2px}
+/* paie */
+.pc{appearance:none;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;display:grid;gap:8px;color:var(--ink);font:inherit;min-width:0}
+.pc[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.pc .id{font:700 2.4rem var(--font-display);color:var(--accent);line-height:1}
+.pc .ord{font:500 .72rem var(--font-mono);color:var(--muted);text-transform:uppercase}
+.detail{margin-top:14px;display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.detail .card h3{font-size:.8rem;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:500}
+.detail .full{grid-column:1/-1}
+.block{border-color:var(--bad);background:var(--bad-bg)}
+.block h3{color:var(--bad)!important}
+/* timeline */
+.tl{display:grid;gap:0;position:relative;padding-left:22px;border-left:2px solid var(--line);margin-left:6px}
+.ti{position:relative;padding:0 0 18px 18px}
+.ti::before{content:"";position:absolute;left:-30px;top:5px;width:12px;height:12px;border-radius:99px;background:var(--accent);border:2px solid var(--bg)}
+.ti .t{font:500 .8rem var(--font-mono);color:var(--accent)}
+.ti .who{font-size:.8rem;color:var(--muted)}
+/* checklist */
+.prog{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.prog .track{flex:1;height:8px;border-radius:99px;background:var(--idle-bg);overflow:hidden}
+.prog .track i{display:block;height:100%;background:var(--copper);width:0;transition:width .25s}
+.cl{display:grid;gap:8px}
+.ci{display:grid;grid-template-columns:auto 1fr auto;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;align-items:start}
+.ci input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent)}
+.ci.done{opacity:.6}.ci.done b{text-decoration:line-through}
+.ci small{color:var(--muted);display:block}
+.when-badge{font:600 .75rem var(--font-mono);background:var(--soft);color:var(--accent);padding:3px 8px;border-radius:6px;white-space:nowrap}
+/* calendar */
+.cal{display:grid;grid-template-columns:minmax(220px,1.7fr) repeat(12,minmax(26px,1fr));gap:3px;min-width:760px;font-size:.85rem}
+.cal .h{font:500 .7rem var(--font-mono);color:var(--muted);text-align:center;padding:4px 0}
+.cal .l{padding:6px 8px 6px 0;line-height:1.3}.cal .l small{display:block;color:var(--muted);font-size:.74rem}
+.cal .c{border-radius:5px;min-height:28px;background:var(--idle-bg);opacity:.45}
+.cal .c.x{opacity:1}
+.t-Fiscal{background:var(--d-fiscal)!important}.t-Social{background:var(--d-social)!important}.t-Comptable{background:var(--d-compta)!important}.t-Pilotage{background:var(--d-pilot)!important}.t-Clôture{background:var(--d-clot)!important}.t-Juridique{background:var(--d-jur)!important}.t-Assurances{background:var(--d-ass)!important}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+/* tva */
+.calc{display:grid;grid-template-columns:1fr 1.1fr;gap:16px}
+.in{display:grid;gap:12px}
+.in label{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+.in input,.in select{width:100%}
+.res{display:grid;gap:10px}
+.line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.line b{font-family:var(--font-display);font-size:1.15rem}
+.big{background:var(--ink);color:var(--bg);border-radius:12px;padding:18px}
+.big .lbl{font:500 .75rem var(--font-mono);text-transform:uppercase;letter-spacing:.08em;opacity:.75}
+.big .v{font:700 2.4rem var(--font-display);font-variant-numeric:tabular-nums}
+.twin{display:flex;gap:6px;align-items:flex-end;height:90px;margin-top:6px}
+.twin i{display:block;flex:1;border-radius:6px 6px 0 0;min-height:3px;transition:height .25s}
+.twin .c1{background:var(--copper)}.twin .c2{background:var(--warn)}
+.trap{margin-top:12px;font-size:.88rem;background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:12px 14px}
+details.ctl{border-bottom:1px solid var(--line);padding:10px 0}
+details.ctl summary{cursor:pointer;font-weight:600}
+details.ctl p{color:var(--muted);margin-top:6px}
+.skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cols{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}
+ul.clean{margin:0;padding-left:1.1em;display:grid;gap:6px}
+@media (max-width:860px){
+  .hero,.calc,.cols{grid-template-columns:1fr}
+  .g3,.g4,.skills,.pillars{grid-template-columns:1fr 1fr}
+  .detail{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .g2,.g3,.g4,.skills,.pillars{grid-template-columns:1fr}
+  .step{grid-template-columns:1fr;gap:4px}
+  .det dl{grid-template-columns:1fr}
+  .slide{padding-block:28px 16px}
+  .pager .btn{flex:1}
+}
+
+select.st{appearance:auto;font:600 .78rem var(--font-body);padding:5px 8px;border-radius:99px;border:1px solid transparent;cursor:pointer;max-width:130px}
+select.st.s-retard{background:var(--bad-bg);color:var(--bad)}select.st.s-traiter{background:var(--warn-bg);color:var(--warn)}select.st.s-planifie{background:var(--ok-bg);color:var(--ok)}
+select.st.s-fait{background:var(--ok-bg);color:var(--ok)}select.st.s-aplanifier{background:var(--idle-bg);color:var(--idle)}select.st.s-encours{background:var(--info-bg);color:var(--info)}select.st.s-bloque{background:var(--blk-bg);color:var(--blk)}
+.okb{appearance:none;width:26px;height:26px;border-radius:99px;border:2px solid var(--muted);background:transparent;cursor:pointer;display:grid;place-items:center;color:transparent;font:700 .85rem var(--font-body);padding:0}
+.okb:hover{border-color:var(--accent)}
+.okb[aria-pressed="true"]{background:var(--copper);border-color:var(--copper);color:var(--accent-ink)}
+tr.isdone td.t{text-decoration:line-through;opacity:.6}
+.addform{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.addform label{display:grid;gap:4px;font-size:.82rem;color:var(--muted);min-width:0}
+.addform input,.addform select,.det input[type=text],.det textarea,.det input[type=date]{width:100%;font:500 .92rem var(--font-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+.addform .wide{grid-column:1/-1}
+.det .ed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.det .ed label{display:grid;gap:4px;font-size:.78rem;color:var(--muted)}
+.det .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.btn.sm{padding:6px 12px;font-size:.84rem}
+.btn.danger{color:var(--bad)}
+.savemsg{font-size:.82rem;color:var(--ok)}
+@media (max-width:860px){.addform,.det .ed{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<nav aria-label="Sections"><div class="nav-in" id="nav"></div></nav>
+<div class="wrap">
+
+<section class="slide" id="accueil" data-title="Accueil">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Étude de cas · Responsable administratif et financier</p>
+      <h1>Rendre les choses <em>prévisibles</em>.</h1>
+    </div>
+    <div class="who"><b style="font-family:var(--font-display);font-size:1.8rem">Melissa Kedjidjian</b>
+      <span class="muted">Candidate au poste de RAF, Sana Oris</span>
+      <span class="muted">Entretien du mardi 10 novembre 2026</span></div>
+  </div>
+  <p class="lead" style="margin-top:22px">Trois sujets, trois outils. Chacun répond à ce que l'étude de cas annonce évaluer : structurer les processus, détecter les anomalies, piloter de manière autonome.</p>
+  <div class="pillars">
+    <div class="pillar"><span class="eyebrow">01</span><b>Un registre qui alerte</b><span class="muted">57 obligations, chacune avec son échéance, son responsable, sa preuve et son contrôle.</span></div>
+    <div class="pillar"><span class="eyebrow">02</span><b>Une paie qui se vérifie</b><span class="muted">Quatre anomalies triées par risque, un circuit mensuel avec une date limite connue de tous.</span></div>
+    <div class="pillar"><span class="eyebrow">03</span><b>Une comptabilité pilotée</b><span class="muted">Checklist mensuelle, calendrier annuel, et un cas de TVA qui mène à un crédit de 1 166,67 €.</span></div>
+  </div>
+  <div class="pager"><span class="hint">Flèches du clavier ou boutons pour avancer</span><button class="btn primary" data-go="1">Ma méthode →</button></div>
+</section>
+
+<section class="slide" id="methode" data-title="Ma méthode">
+  <div class="head"><p class="eyebrow">Ma façon de travailler</p><h2>Un système, pas une liste</h2>
+  <p class="lead">Dans un groupe qui grandit, les oublis ne viennent pas d'un manque de sérieux mais d'un manque de système. Je construis donc trois choses.</p></div>
+  <div class="grid g3">
+    <div class="card"><h3>Structurer</h3><p class="muted">Des échéances qui alertent avant qu'elles arrivent. Un nom en face de chaque obligation.</p></div>
+    <div class="card"><h3>Détecter</h3><p class="muted">Des contrôles écrits et répétables. Pas de justificatif, pas de saisie définitive.</p></div>
+    <div class="card"><h3>Piloter</h3><p class="muted">Un rythme fixe avec l'expert-comptable, un tableau de bord d'une page pour la direction.</p></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h3>Quand je ne sais pas, je le dis</h3>
+  <p class="muted">Les règles qui dépendent de l'entité ou de la convention collective sont marquées « à confirmer ». Une question posée le premier jour coûte moins qu'une erreur répétée pendant six mois.</p></div>
+  <div class="pager"><button class="btn" data-go="0">← Accueil</button><button class="btn primary" data-go="2">01 Obligations →</button></div>
+</section>
+
+<section class="slide" id="obligations" data-title="01 Obligations">
+  <div class="head"><p class="eyebrow">01 · Sécurisation des obligations</p><h2>Le registre, vivant</h2>
+  <p class="lead">Cochez une obligation pour la marquer comme faite, changez son statut en un clic, modifiez l'échéance, le responsable ou la note, ajoutez vos propres lignes. Vos changements restent enregistrés dans ce navigateur.</p></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="prog"><b id="opg" class="mono"></b><div class="track"><i id="opb"></i></div></div>
+  <div class="toolbar">
+    <label class="f" for="refd">Date de référence <input type="date" id="refd"></label>
+    <div class="chips" id="stchips" role="group" aria-label="Filtrer par statut"></div>
+  </div>
+  <div class="chips" id="catchips" role="group" aria-label="Filtrer par catégorie" style="margin-bottom:12px"></div>
+  <div class="toolbar">
+    <button class="btn sm primary" id="addbtn" type="button" aria-expanded="false">+ Ajouter une obligation</button>
+    <button class="btn sm" id="csvbtn" type="button">Exporter en CSV</button>
+    <button class="btn sm danger" id="resetbtn" type="button">Réinitialiser mes modifications</button>
+    <span class="savemsg" id="savemsg" role="status"></span>
+  </div>
+  <form class="card addform" id="addform" hidden>
+    <label class="wide" for="a-name">Obligation<input id="a-name" type="text" required placeholder="Ex. Renouvellement du contrat de maintenance des autoclaves"></label>
+    <label for="a-cat">Catégorie<select id="a-cat"></select></label>
+    <label for="a-ent">Entité<select id="a-ent"><option>Toutes entités</option><option>Chaque clinique</option><option>Holding / SCI</option></select></label>
+    <label for="a-date">Échéance<input id="a-date" type="date" required></label>
+    <label for="a-crit">Criticité<select id="a-crit"><option>Critique</option><option selected>Élevée</option><option>Normale</option></select></label>
+    <label for="a-resp">Responsable<input id="a-resp" type="text" value="RAF"></label>
+    <label for="a-per">Périodicité<input id="a-per" type="text" value="Annuelle"></label>
+    <div class="wide" style="display:flex;gap:8px"><button class="btn primary sm" type="submit">Ajouter au registre</button><button class="btn sm" type="button" id="addcancel">Annuler</button></div>
+  </form>
+  <div class="tw"><table><thead><tr><th style="width:44px">Fait</th><th>Obligation</th><th>Entité</th><th>Échéance</th><th class="n">Jours</th><th>Statut</th><th>Prior.</th></tr></thead><tbody id="obl"></tbody></table></div>
+  <p class="hint" style="margin-top:8px">Dates indicatives pour la démonstration. En poste, je les confirme entité par entité avec l'expert-comptable. Cliquez une ligne pour modifier ses détails.</p>
+  <div class="pager"><button class="btn" data-go="1">← Méthode</button><button class="btn primary" data-go="3">Au-delà de l'énoncé →</button></div>
+</section>
+
+<section class="slide" id="plan" data-title="01 Plan 90 jours">
+  <div class="head"><p class="eyebrow">01 · Obligations supplémentaires et plan</p><h2>Ce que j'ajoute, et par où je commence</h2></div>
+  <div class="cols">
+    <div>
+      <h3 style="margin-bottom:12px">Obligations ajoutées au-delà de l'énoncé</h3>
+      <ul class="clean">
+        <li><b>Radioprotection</b> : contrôles des appareils, dosimétrie, personne compétente.</li>
+        <li><b>Stérilisation</b> et équipements sous pression : validations et traçabilité.</li>
+        <li><b>Déchets d'activité de soins</b> : contrat de collecte et bordereaux.</li>
+        <li><b>Praticiens</b> : inscription à l'Ordre, attestation de responsabilité civile.</li>
+        <li><b>Taxe sur les salaires</b> : probablement due avec une activité très exonérée. À vérifier dès la semaine 1.</li>
+        <li><b>Facturation électronique</b> : réception depuis septembre 2026, émission des PME en septembre 2027.</li>
+        <li><b>Intragroupe</b> : conventions, comptes courants, refacturations.</li>
+        <li><b>Données de santé</b>, titres de séjour, formations obligatoires, baux, emprunts, trésorerie à 13 semaines.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:12px">Les 90 premiers jours</h3>
+      <div class="steps" id="plansteps"></div>
+    </div>
+  </div>
+  <div class="pager"><button class="btn" data-go="2">← Registre</button><button class="btn primary" data-go="4">02 Paie →</button></div>
+</section>
+
+<section class="slide" id="paie" data-title="02 Paie">
+  <div class="head"><p class="eyebrow">02 · Fiabilisation de la paie</p><h2>Quatre anomalies, un ordre de traitement</h2>
+  <p class="lead">Paie à valider dans deux jours. Je traite d'abord ce qui coûte le plus et se rattrape le moins bien. Cliquez une situation pour le détail.</p></div>
+  <div class="grid g4" id="pcards"></div>
+  <div class="detail" id="pdetail"></div>
+  <p class="hint" style="margin-top:12px">Montants indicatifs (21,67 jours ouvrés, 151,67 heures, majoration de 25 % à confirmer). Le calcul définitif se fait dans PayFit, avec la méthode de décompte de l'entreprise et la convention collective.</p>
+  <div class="pager"><button class="btn" data-go="3">← Plan</button><button class="btn primary" data-go="5">Process de paie →</button></div>
+</section>
+
+<section class="slide" id="process" data-title="02 Process">
+  <div class="head"><p class="eyebrow">02 · Collecte des variables → déclarations et paiements</p><h2>Un calendrier connu de tous</h2>
+  <p class="lead">Novembre est arrivé à J-2 parce qu'aucune date limite n'existait. J est le jour de validation de la paie dans PayFit.</p></div>
+  <div class="cols">
+    <div class="tl" id="tl"></div>
+    <div>
+      <div class="card"><h3>Contrôles sur chaque paie</h3>
+        <div id="ctrlpaie"></div></div>
+    </div>
+  </div>
+  <div class="pager"><button class="btn" data-go="4">← Anomalies</button><button class="btn primary" data-go="6">03 Comptabilité →</button></div>
+</section>
+
+<section class="slide" id="compta" data-title="03 Mensuel">
+  <div class="head"><p class="eyebrow">03 · Contrôle comptable mensuel</p><h2>Alimenter, contrôler, questionner, remonter</h2>
+  <p class="lead">J+x désigne les jours ouvrés après la fin du mois. Cochez pour suivre l'avancement.</p></div>
+  <div class="prog"><b id="pgt" class="mono"></b><div class="track"><i id="pgb"></i></div></div>
+  <div class="toolbar"><div class="chips" id="blocchips" role="group" aria-label="Filtrer par bloc"></div></div>
+  <div class="cl" id="cl"></div>
+  <div class="pager"><button class="btn" data-go="5">← Process</button><button class="btn primary" data-go="7">Calendrier annuel →</button></div>
+</section>
+
+<section class="slide" id="annuel" data-title="03 Annuel">
+  <div class="head"><p class="eyebrow">03 · Suivi annuel et clôture</p><h2>L'année en un coup d'œil</h2>
+  <p class="lead">Exercice clos au 31 décembre. Quatre fils en parallèle : fiscal, juridique, clôture, pilotage.</p></div>
+  <div class="toolbar"><div class="chips" id="typchips" role="group" aria-label="Filtrer par domaine"></div></div>
+  <div class="tw" style="padding:12px"><div class="cal" id="cal"></div></div>
+  <h3 style="margin:26px 0 12px">Préparer la clôture</h3>
+  <div class="steps" id="clot"></div>
+  <div class="pager"><button class="btn" data-go="6">← Mensuel</button><button class="btn primary" data-go="8">TVA →</button></div>
+</section>
+
+<section class="slide" id="tva" data-title="03 TVA">
+  <div class="head"><p class="eyebrow">03 · TVA, cas pratique</p><h2>Un crédit de TVA, pas une dette</h2>
+  <p class="lead">Modifiez les montants pour voir le calcul se mettre à jour. Les soins exonérés ne génèrent aucune TVA collectée.</p></div>
+  <div class="calc">
+    <div class="card in">
+      <label for="i-exo">Soins dentaires exonérés (€)<input id="i-exo" type="number" step="100" value="80000"></label>
+      <label for="i-v">Prestations taxables, TTC (€)<input id="i-v" type="number" step="100" value="5000"></label>
+      <label for="i-a">Achats affectés à l'activité taxable, TTC (€)<input id="i-a" type="number" step="100" value="12000"></label>
+      <label for="i-t">Taux de TVA<select id="i-t"><option value="0.2" selected>20 %</option><option value="0.1">10 %</option><option value="0.055">5,5 %</option></select></label>
+      <div class="trap" id="trap"></div>
+    </div>
+    <div class="res">
+      <div class="big"><div class="lbl" id="rl">TVA nette</div><div class="v" id="rv"></div><div id="rs" style="opacity:.85"></div></div>
+      <div class="card">
+        <div class="line"><span>TVA collectée</span><b id="oc"></b></div>
+        <div class="line"><span>TVA déductible</span><b id="od"></b></div>
+        <div class="line"><span class="muted">Ventes taxables hors taxe</span><span id="ov"></span></div>
+        <div class="line"><span class="muted">Achats hors taxe</span><span id="oa"></span></div>
+        <div class="twin" aria-hidden="true"><i class="c1" id="b1"></i><i class="c2" id="b2"></i></div>
+        <div class="hint" style="display:flex;gap:16px;margin-top:6px"><span><span class="sw" style="background:var(--copper)"></span>Collectée</span><span><span class="sw" style="background:var(--warn)"></span>Déductible</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>Avant de valider une déclaration</h3><div id="tvactl"></div></div>
+  <div class="card" style="margin-top:14px"><h3>Mon regard de RAF</h3>
+  <p class="muted">Le calcul est correct, mais la situation est atypique : des achats supérieurs à deux fois le chiffre d'affaires taxable, dans une entité surtout exonérée. Avant tout remboursement, je documenterais l'affectation exclusive de ces achats à l'activité taxable.</p></div>
+  <div class="pager"><button class="btn" data-go="7">← Annuel</button><button class="btn primary" data-go="9">Mes 30 premiers jours →</button></div>
+</section>
+
+<section class="slide" id="arrivee" data-title="Pour conclure">
+  <div class="head"><p class="eyebrow">Pour conclure</p><h2>Ce que j'apporte à Sana Oris</h2></div>
+  <div class="skills">
+    <div class="card"><h3>Anticipation</h3><p class="muted">Les échéances sont connues avant d'arriver, avec la trésorerie prévue.</p></div>
+    <div class="card"><h3>Rigueur</h3><p class="muted">Chaque correction a sa pièce, chaque contrôle sa preuve.</p></div>
+    <div class="card"><h3>Autonomie</h3><p class="muted">Je cadre, je priorise, je remonte à la direction ce qui demande une décision.</p></div>
+    <div class="card"><h3>Relation avec l'expert-comptable</h3><p class="muted">Des pièces complètes à J+3, des retours attendus à J+8, un tableau de points ouverts.</p></div>
+    <div class="card"><h3>Pédagogie</h3><p class="muted">Des règles simples pour les responsables de clinique : une date, une fiche, un nom.</p></div>
+    <div class="card"><h3>Esprit de synthèse</h3><p class="muted">Une page par mois pour la direction, lisible en dix minutes.</p></div>
+  </div>
+  <div class="cols" style="margin-top:22px">
+    <div class="card"><h3>Mes premières semaines</h3><ul class="clean">
+      <li>Vérifier le dépôt des comptes de chaque entité.</li>
+      <li>Lancer la mise à jour du DUERP et l'état des lieux du suivi médical.</li>
+      <li>Valider avec l'expert-comptable les régimes de TVA et la taxe sur les salaires.</li>
+      <li>Mettre en place le circuit mensuel des variables de paie.</li></ul></div>
+    <div class="card"><h3>Mes questions pour vous</h3><ul class="clean">
+      <li>Quelle convention collective est appliquée dans chaque entité ?</li>
+      <li>Quelle est la structure juridique entre praticiens et sociétés ?</li>
+      <li>Quelle est la priorité de la direction pour les six premiers mois ?</li></ul></div>
+  </div>
+  <div class="pager"><button class="btn" data-go="8">← TVA</button><button class="btn primary" data-go="0">Revenir au début</button></div>
+</section>
+</div>
+
+<script>
+const D={"obl": [{"cat": "Social & RH", "name": "DSN mensuelle (via PayFit)", "ent": "Toutes entités", "per": "Mensuelle", "ref": "5 ou 15 du mois selon l'effectif (à confirmer par entité)", "date": "2026-12-15", "crit": "Critique", "resp": "RAF", "proof": "DSN déposée, compte rendu de dépôt, bilan DSN", "ctrl": "Pré-contrôles PayFit ; rapprochement bulletins / DSN (effectif, brut, cotisations, PAS) ; lecture du compte rendu sous 48 h ; anomalies tracées", "prio": "P1"}, {"cat": "Social & RH", "name": "Paiement des cotisations sociales", "ent": "Toutes entités", "per": "Mensuelle", "ref": "Date de prélèvement indiquée par la DSN", "date": "2026-12-15", "crit": "Critique", "resp": "RAF", "proof": "Avis de prélèvement, relevé bancaire", "ctrl": "Montant prélevé = bilan DSN ; trésorerie disponible à J-3 ; rapprochement bancaire du compte", "prio": "P1"}, {"cat": "Social & RH", "name": "DSN événementielles (arrêt, reprise, fin de contrat)", "ent": "Toutes entités", "per": "Événementielle", "ref": "Sous 5 jours après l'événement", "date": "2026-11-17", "crit": "Critique", "resp": "RAF", "proof": "Accusé de dépôt de chaque signalement", "ctrl": "Chaque arrêt ou sortie reçu déclenche un signalement ; revue mensuelle de la liste des événements du mois", "prio": "P1"}, {"cat": "Social & RH", "name": "Registre unique du personnel à jour", "ent": "Chaque clinique", "per": "Mensuelle", "ref": "Mise à jour à chaque entrée / sortie", "date": "2026-12-04", "crit": "Élevée", "resp": "RAF", "proof": "Extrait du registre signé", "ctrl": "Rapprochement avec la liste PayFit des salariés et les DPAE", "prio": "P2"}, {"cat": "Social & RH", "name": "Suivi des contrats (CDD, périodes d'essai, renouvellements)", "ent": "Toutes entités", "per": "Mensuelle", "ref": "Alerte 45 jours avant chaque terme", "date": "2026-12-01", "crit": "Élevée", "resp": "RAF", "proof": "Tableau de suivi, avenants signés", "ctrl": "Aucun contrat à terme sans décision écrite ; renouvellements validés par la direction", "prio": "P2"}, {"cat": "Social & RH", "name": "Entretiens professionnels (tous les 2 ans) et état des lieux à 6 ans", "ent": "Toutes entités", "per": "Biennale", "ref": "Planning par salarié, point trimestriel", "date": "2026-12-31", "crit": "Élevée", "resp": "RAF + Resp. clinique", "proof": "Compte rendu signé par le salarié", "ctrl": "Tableau salarié par salarié : date du dernier entretien, prochain entretien, formations suivies", "prio": "P1"}, {"cat": "Social & RH", "name": "Entretien de reprise après absence longue", "ent": "Toutes entités", "per": "Événementielle", "ref": "À chaque retour d'absence longue", "date": "2026-12-15", "crit": "Normale", "resp": "RAF", "proof": "Compte rendu d'entretien", "ctrl": "Déclenché depuis la saisie de la reprise dans PayFit", "prio": "P3"}, {"cat": "Social & RH", "name": "Congés payés : compteurs, plan de prise, clôture de la période", "ent": "Toutes entités", "per": "Trimestrielle", "ref": "Clôture de la période de référence (31 mai, à confirmer)", "date": "2027-05-15", "crit": "Élevée", "resp": "RAF", "proof": "Export des compteurs PayFit, planning validé", "ctrl": "Compteurs négatifs, soldes élevés, jours non posés ; provision de congés transmise à l'expert-comptable", "prio": "P2"}, {"cat": "Social & RH", "name": "Titres de séjour et autorisations de travail", "ent": "Toutes entités", "per": "Mensuelle", "ref": "Alerte 90 jours avant expiration", "date": "2026-12-15", "crit": "Critique", "resp": "RAF", "proof": "Copie du titre, date d'expiration au dossier", "ctrl": "Tableau des échéances ; relance du salarié à J-90 ; aucune paie sans titre valide", "prio": "P2"}, {"cat": "Social & RH", "name": "Prévoyance et mutuelle obligatoires : contrats, dispenses, rapport annuel", "ent": "Toutes entités", "per": "Annuelle", "ref": "Renouvellement au 1er janvier", "date": "2026-12-31", "crit": "Élevée", "resp": "RAF", "proof": "Contrats, DUE / notices, dispenses signées", "ctrl": "Paramétrage PayFit = contrat ; cotisations facturées = cotisations retenues", "prio": "P2"}, {"cat": "Social & RH", "name": "Suivi des seuils d'effectif (11, 20, 50 salariés)", "ent": "Toutes entités", "per": "Trimestrielle", "ref": "Effectif moyen calculé en fin d'année", "date": "2026-12-31", "crit": "Élevée", "resp": "RAF", "proof": "Calcul d'effectif par entité et pour le groupe", "ctrl": "Anticiper CSE, obligation d'emploi, index d'égalité, règlement intérieur dès franchissement", "prio": "P2"}, {"cat": "Social & RH", "name": "Obligation d'emploi des travailleurs handicapés (via DSN)", "ent": "Toutes entités", "per": "Annuelle", "ref": "DSN de janvier (5 ou 15 février)", "date": "2027-02-15", "crit": "Normale", "resp": "RAF", "proof": "Déclaration annuelle, justificatifs d'unités bénéficiaires", "ctrl": "Vérifier la prise en compte des salariés concernés", "prio": "P3"}, {"cat": "Social & RH", "name": "Inscription à l'Ordre de chaque praticien", "ent": "Chaque clinique", "per": "Annuelle", "ref": "Copie à jour dans chaque dossier", "date": "2027-01-31", "crit": "Critique", "resp": "RAF", "proof": "Attestation d'inscription", "ctrl": "Aucun praticien en exercice sans inscription valide", "prio": "P1"}, {"cat": "Social & RH", "name": "Contrats et redevances des praticiens (selon le montage retenu)", "ent": "Toutes entités", "per": "Annuelle", "ref": "Revue de chaque contrat à sa date anniversaire", "date": "2026-12-31", "crit": "Élevée", "resp": "RAF + Direction", "proof": "Contrats signés, relevés de redevances", "ctrl": "Redevances facturées = contrat ; qualification des flux validée avec l'expert-comptable", "prio": "P2"}, {"cat": "Santé & sécurité", "name": "DUERP : vérification immédiate puis mise à jour annuelle", "ent": "Chaque clinique", "per": "Annuelle + à chaque changement", "ref": "Revue annuelle et après tout changement d'organisation ou d'équipement", "date": "2026-12-18", "crit": "Critique", "resp": "Direction + RAF", "proof": "Document daté et signé, historique des versions (conservation longue)", "ctrl": "Couvre risques biologiques, rayonnements, produits chimiques, TMS, risques psychosociaux ; implique praticiens et assistantes", "prio": "P1"}, {"cat": "Santé & sécurité", "name": "Plan d'actions de prévention issu du DUERP", "ent": "Chaque clinique", "per": "Trimestrielle", "ref": "Point trimestriel d'avancement", "date": "2027-01-29", "crit": "Élevée", "resp": "RAF + Resp. clinique", "proof": "Plan d'actions avec responsables et dates", "ctrl": "Chaque risque coté a une action, un responsable et une date", "prio": "P2"}, {"cat": "Santé & sécurité", "name": "Suivi médical : visites d'information et de prévention, suivi renforcé", "ent": "Chaque clinique", "per": "Selon le poste (2 à 5 ans)", "ref": "État des lieux salarié par salarié", "date": "2026-12-11", "crit": "Critique", "resp": "RAF", "proof": "Attestations de visite, avis d'aptitude", "ctrl": "Tableau nominatif : dernière visite, prochaine visite, poste classé en suivi renforcé ou non", "prio": "P1"}, {"cat": "Santé & sécurité", "name": "Service de santé au travail : adhésion, cotisation, contact référent", "ent": "Toutes entités", "per": "Annuelle", "ref": "Appel de cotisation en début d'année", "date": "2027-01-15", "crit": "Normale", "resp": "RAF", "proof": "Contrat d'adhésion, facture", "ctrl": "Effectif déclaré au service = effectif réel", "prio": "P2"}, {"cat": "Santé & sécurité", "name": "Formations obligatoires : radioprotection, gestes et soins d'urgence, hygiène et asepsie, incendie", "ent": "Chaque clinique", "per": "Trimestrielle", "ref": "Validité propre à chaque formation", "date": "2026-12-18", "crit": "Élevée", "resp": "RAF + Resp. clinique", "proof": "Attestations de formation", "ctrl": "Matrice formation × salarié avec dates de validité et alertes de renouvellement", "prio": "P2"}, {"cat": "Santé & sécurité", "name": "Affichages et documents obligatoires", "ent": "Chaque clinique", "per": "Semestrielle", "ref": "Visite de contrôle en clinique", "date": "2026-12-18", "crit": "Normale", "resp": "RAF", "proof": "Photo datée des affichages", "ctrl": "Convention collective accessible, consignes de sécurité, coordonnées utiles à jour", "prio": "P3"}, {"cat": "Santé & sécurité", "name": "Accidents du travail : déclaration et registre des accidents bénins", "ent": "Toutes entités", "per": "Événementielle", "ref": "Déclaration sous 48 h", "date": "2026-12-01", "crit": "Élevée", "resp": "RAF", "proof": "Déclaration, registre", "ctrl": "Revue mensuelle ; coordination avec les arrêts saisis dans PayFit", "prio": "P2"}, {"cat": "Réglementaire clinique", "name": "Radioprotection : contrôles des appareils, dosimétrie, personne compétente désignée", "ent": "Chaque clinique", "per": "Annuelle (selon appareil)", "ref": "Contrôles par organisme habilité", "date": "2027-01-29", "crit": "Critique", "resp": "Direction + RAF", "proof": "Rapports de contrôle, désignation écrite, résultats de dosimétrie", "ctrl": "Chaque appareil a un rapport en cours de validité ; non-conformités soldées", "prio": "P1"}, {"cat": "Réglementaire clinique", "name": "Contrôles périodiques : électricité, incendie, désenfumage", "ent": "Chaque clinique", "per": "Annuelle", "ref": "Contrat de vérification", "date": "2027-01-29", "crit": "Élevée", "resp": "RAF", "proof": "Rapports de vérification, registre de sécurité", "ctrl": "Réserves levées dans le délai ; registre à jour", "prio": "P2"}, {"cat": "Réglementaire clinique", "name": "Stérilisation et équipements sous pression : validations, maintenance, traçabilité", "ent": "Chaque clinique", "per": "Annuelle", "ref": "Contrats de maintenance", "date": "2027-02-26", "crit": "Critique", "resp": "Direction + RAF", "proof": "Rapports de validation, journaux de traçabilité", "ctrl": "Pas de cycle de stérilisation sans traçabilité ; maintenance faite à date", "prio": "P1"}, {"cat": "Réglementaire clinique", "name": "Déchets d'activité de soins à risque infectieux : contrat de collecte et bordereaux", "ent": "Chaque clinique", "per": "Trimestrielle", "ref": "Bordereaux conservés selon la durée prévue", "date": "2026-12-18", "crit": "Élevée", "resp": "RAF + Resp. clinique", "proof": "Bordereaux de suivi, contrat, factures", "ctrl": "Volumes facturés = volumes collectés ; bordereaux complets", "prio": "P2"}, {"cat": "Réglementaire clinique", "name": "Registre de sécurité, accessibilité et commission de sécurité (établissement recevant du public)", "ent": "Chaque clinique", "per": "Annuelle", "ref": "Selon la catégorie de l'établissement", "date": "2027-03-31", "crit": "Élevée", "resp": "RAF", "proof": "Registre, attestations, avis", "ctrl": "Dernier avis favorable en dossier ; prescriptions suivies", "prio": "P3"}, {"cat": "Réglementaire clinique", "name": "Maintenance des dispositifs médicaux et contrats associés", "ent": "Chaque clinique", "per": "Annuelle", "ref": "Échéance de chaque contrat", "date": "2027-01-29", "crit": "Élevée", "resp": "RAF", "proof": "Contrats, rapports d'intervention", "ctrl": "Inventaire des appareils rapproché des contrats ; préavis de résiliation tracés", "prio": "P2"}, {"cat": "Réglementaire clinique", "name": "Données de santé : registre des traitements, habilitations, sauvegardes, hébergeur", "ent": "Toutes entités", "per": "Annuelle + revue trimestrielle des accès", "ref": "Revue des accès chaque trimestre", "date": "2027-03-31", "crit": "Élevée", "resp": "RAF + Direction", "proof": "Registre, tests de restauration, contrats d'hébergement", "ctrl": "Comptes des départs désactivés ; sauvegarde testée ; sous-traitants encadrés", "prio": "P2"}, {"cat": "Réglementaire clinique", "name": "Devis, honoraires et information tarifaire des patients", "ent": "Chaque clinique", "per": "Annuelle", "ref": "Revue des modèles", "date": "2027-01-29", "crit": "Normale", "resp": "RAF + Direction", "proof": "Modèles validés, affichage", "ctrl": "Modèles à jour des dernières évolutions tarifaires", "prio": "P3"}, {"cat": "Fiscal", "name": "TVA : déclaration et paiement, entité par entité", "ent": "Toutes entités", "per": "Mensuelle (ou selon le régime de l'entité)", "ref": "Entre le 15 et le 24 du mois selon le dossier (à confirmer)", "date": "2026-12-18", "crit": "Critique", "resp": "RAF + EC", "proof": "Déclaration, accusé de dépôt, justificatif de paiement", "ctrl": "Contrôles avant validation (voir onglet TVA) ; revue spécifique des entités à activité mixte", "prio": "P1"}, {"cat": "Fiscal", "name": "Acomptes d'impôt sur les sociétés", "ent": "Toutes entités", "per": "Trimestrielle", "ref": "15 mars, 15 juin, 15 septembre, 15 décembre (exercice civil)", "date": "2026-12-15", "crit": "Critique", "resp": "RAF + EC", "proof": "Avis de paiement, calcul de l'acompte", "ctrl": "Montant cohérent avec le résultat estimé ; trésorerie prévue 30 jours avant", "prio": "P1"}, {"cat": "Fiscal", "name": "Cotisation foncière des entreprises : acompte et solde", "ent": "Chaque clinique", "per": "Annuelle", "ref": "15 juin (acompte) et 15 décembre (solde)", "date": "2026-12-15", "crit": "Élevée", "resp": "RAF", "proof": "Avis d'imposition, preuve de paiement", "ctrl": "Avis rapproché des locaux réellement occupés", "prio": "P1"}, {"cat": "Fiscal", "name": "Taxe sur les salaires (entités à activité exonérée de TVA)", "ent": "Toutes entités", "per": "Selon le montant dû", "ref": "Mensuelle, trimestrielle ou annuelle (à confirmer avec l'expert-comptable)", "date": "2026-12-15", "crit": "Critique", "resp": "RAF + EC", "proof": "Déclarations et paiements", "ctrl": "Vérifier dès l'arrivée si elle est due et si le rapport d'assujettissement est cohérent avec la TVA", "prio": "P1"}, {"cat": "Fiscal", "name": "Liasse fiscale et déclaration de résultats", "ent": "Toutes entités", "per": "Annuelle", "ref": "Début mai pour une clôture au 31/12", "date": "2027-05-04", "crit": "Critique", "resp": "EC + RAF", "proof": "Liasse validée, accusé de dépôt", "ctrl": "Relecture avant signature ; cohérence avec les comptes arrêtés", "prio": "P2"}, {"cat": "Fiscal", "name": "Solde de l'impôt sur les sociétés", "ent": "Toutes entités", "per": "Annuelle", "ref": "15 mai pour une clôture au 31/12", "date": "2027-05-15", "crit": "Critique", "resp": "RAF + EC", "proof": "Avis de paiement", "ctrl": "Solde = impôt dû − acomptes versés", "prio": "P2"}, {"cat": "Fiscal", "name": "Déclaration des honoraires versés à des tiers", "ent": "Toutes entités", "per": "Annuelle", "ref": "Avec la liasse, début mai", "date": "2027-05-04", "crit": "Normale", "resp": "EC + RAF", "proof": "Déclaration déposée", "ctrl": "Liste des prestataires rapprochée du grand livre", "prio": "P3"}, {"cat": "Fiscal", "name": "Régularisation annuelle du coefficient de déduction de TVA (activités mixtes)", "ent": "Toutes entités", "per": "Annuelle", "ref": "Déclaration de décembre ou première de l'année suivante (à valider)", "date": "2027-01-20", "crit": "Élevée", "resp": "RAF + EC", "proof": "Calcul du coefficient, déclaration", "ctrl": "Chiffre d'affaires taxable / total recalculé ; écart avec le coefficient provisoire expliqué", "prio": "P2"}, {"cat": "Fiscal", "name": "Facturation électronique : choix de la plateforme, réception, puis émission", "ent": "Toutes entités", "per": "Projet", "ref": "Réception obligatoire depuis septembre 2026 ; émission des PME en septembre 2027", "date": "2026-12-18", "crit": "Élevée", "resp": "RAF + Direction", "proof": "Contrat plateforme, test de réception", "ctrl": "Fournisseurs informés ; circuit de validation des factures reçues adapté ; calendrier à vérifier", "prio": "P1"}, {"cat": "Fiscal", "name": "Étude d'opportunité : intégration fiscale ou régime de groupe", "ent": "Holding / SCI", "per": "Ponctuelle", "ref": "Avant l'ouverture de l'exercice concerné", "date": "2027-03-31", "crit": "Normale", "resp": "RAF + EC", "proof": "Note d'analyse", "ctrl": "Chiffrer l'intérêt avec l'expert-comptable avant toute décision", "prio": "P3"}, {"cat": "Juridique & gouvernance", "name": "Contrôle du dépôt effectif des comptes annuels N-1 et N-2 de chaque entité", "ent": "Toutes entités", "per": "Immédiat puis annuel", "ref": "Dès l'arrivée", "date": "2026-11-30", "crit": "Critique", "resp": "RAF", "proof": "Récépissés de dépôt ou extrait du registre", "ctrl": "Une ligne par entité et par exercice ; manquants régularisés immédiatement", "prio": "P1"}, {"cat": "Juridique & gouvernance", "name": "Arrêté des comptes annuels", "ent": "Toutes entités", "per": "Annuelle", "ref": "Dans les 3 à 4 mois de la clôture (cible interne)", "date": "2027-04-30", "crit": "Critique", "resp": "Direction + EC", "proof": "PV d'arrêté des comptes, rapport de gestion", "ctrl": "Dossier complet circulé 10 jours avant", "prio": "P2"}, {"cat": "Juridique & gouvernance", "name": "Approbation des comptes en assemblée", "ent": "Toutes entités", "per": "Annuelle", "ref": "Dans les 6 mois de la clôture (30 juin pour un 31/12)", "date": "2027-06-30", "crit": "Critique", "resp": "Direction + RAF", "proof": "PV d'assemblée signé, feuille de présence", "ctrl": "Convocations dans les délais ; décision d'affectation du résultat", "prio": "P2"}, {"cat": "Juridique & gouvernance", "name": "Dépôt des comptes au greffe", "ent": "Toutes entités", "per": "Annuelle", "ref": "Dans le mois suivant l'assemblée (2 mois si dépôt électronique)", "date": "2027-07-31", "crit": "Critique", "resp": "RAF + EC", "proof": "Récépissé de dépôt archivé", "ctrl": "Récépissé reçu et classé ; vérification sur le registre un mois après", "prio": "P1"}, {"cat": "Juridique & gouvernance", "name": "Registres légaux (mouvements de titres, PV, décisions)", "ent": "Toutes entités", "per": "Annuelle", "ref": "Mise à jour à chaque opération", "date": "2027-03-31", "crit": "Élevée", "resp": "RAF", "proof": "Registres à jour", "ctrl": "Chaque opération sur le capital a sa trace ; PV signés et classés", "prio": "P2"}, {"cat": "Juridique & gouvernance", "name": "Conventions intragroupe : refacturations, comptes courants, prestations", "ent": "Toutes entités", "per": "Annuelle", "ref": "Revue à l'arrêté des comptes", "date": "2027-03-31", "crit": "Élevée", "resp": "RAF + Direction", "proof": "Conventions signées, tableau des flux réciproques", "ctrl": "Flux réciproques identiques entre entités ; TVA correctement appliquée", "prio": "P2"}, {"cat": "Juridique & gouvernance", "name": "Mandats des dirigeants et seuils de contrôle légal des comptes", "ent": "Toutes entités", "per": "Annuelle", "ref": "Revue à l'arrêté des comptes", "date": "2027-03-31", "crit": "Normale", "resp": "RAF", "proof": "Tableau des mandats", "ctrl": "Échéances de mandats ; franchissement de seuils au niveau du groupe", "prio": "P3"}, {"cat": "Juridique & gouvernance", "name": "Statuts, extrait d'immatriculation et déclaration des bénéficiaires effectifs à jour", "ent": "Toutes entités", "per": "Semestrielle", "ref": "Modification déclarée dans le mois", "date": "2027-01-15", "crit": "Élevée", "resp": "RAF", "proof": "Extrait de moins de 3 mois, statuts à jour", "ctrl": "Adresse, dirigeants et objet conformes à la réalité", "prio": "P2"}, {"cat": "Juridique & gouvernance", "name": "Baux : échéances, indexation, préavis, dépôts de garantie", "ent": "Chaque clinique", "per": "Annuelle", "ref": "Alerte 180 jours avant chaque échéance triennale", "date": "2027-03-31", "crit": "Élevée", "resp": "RAF + Direction", "proof": "Baux, avenants, quittances", "ctrl": "Indexation appliquée ; charges refacturées conformes ; date d'échéance en agenda", "prio": "P2"}, {"cat": "Assurances & contrats", "name": "Tableau consolidé des assurances, entité par entité", "ent": "Toutes entités", "per": "Immédiat puis annuel", "ref": "Dès l'arrivée", "date": "2026-12-04", "crit": "Critique", "resp": "RAF", "proof": "Tableau : assureur, garanties, plafonds, franchises, prime, échéance", "ctrl": "Responsabilité civile professionnelle, multirisque, perte d'exploitation, cyber, flotte, dirigeants ; doublons et trous de garantie repérés", "prio": "P1"}, {"cat": "Assurances & contrats", "name": "Échéances et préavis de résiliation des polices", "ent": "Toutes entités", "per": "Annuelle", "ref": "Alerte 90 jours avant l'échéance", "date": "2026-12-31", "crit": "Élevée", "resp": "RAF", "proof": "Courrier de renouvellement ou de résiliation", "ctrl": "Mise en concurrence décidée avant la fenêtre de préavis", "prio": "P2"}, {"cat": "Assurances & contrats", "name": "Attestations de responsabilité civile de chaque praticien", "ent": "Chaque clinique", "per": "Annuelle", "ref": "À chaque renouvellement", "date": "2027-01-31", "crit": "Critique", "resp": "RAF", "proof": "Attestation en cours de validité", "ctrl": "Aucun praticien en exercice sans attestation", "prio": "P1"}, {"cat": "Assurances & contrats", "name": "Contrats à reconduction tacite (maintenance, logiciels, télécom, leasing)", "ent": "Toutes entités", "per": "Annuelle", "ref": "Fenêtre de préavis de chaque contrat", "date": "2026-12-31", "crit": "Normale", "resp": "RAF", "proof": "Registre des contrats", "ctrl": "Préavis en agenda ; renégociation avant reconduction", "prio": "P2"}, {"cat": "Assurances & contrats", "name": "Emprunts et leasing : échéanciers, engagements, garanties, reporting banque", "ent": "Toutes entités", "per": "Trimestrielle", "ref": "Échéance de chaque engagement", "date": "2026-12-31", "crit": "Élevée", "resp": "RAF", "proof": "Tableaux d'amortissement, courriers bancaires", "ctrl": "Écritures comptables = échéanciers ; ratios demandés par la banque respectés", "prio": "P2"}, {"cat": "Pilotage & contrôle interne", "name": "Prévisionnel de trésorerie glissant à 13 semaines", "ent": "Toutes entités", "per": "Mensuelle (hebdomadaire si tension)", "ref": "Mise à jour en début de mois", "date": "2026-11-27", "crit": "Élevée", "resp": "RAF", "proof": "Fichier de prévision, écarts commentés", "ctrl": "Écart prévu / réel analysé ; échéances fiscales et sociales provisionnées", "prio": "P1"}, {"cat": "Pilotage & contrôle interne", "name": "Revue des habilitations (PayFit, banque, impots.gouv, URSSAF, expert-comptable)", "ent": "Toutes entités", "per": "Trimestrielle", "ref": "Fin de chaque trimestre", "date": "2026-12-31", "crit": "Normale", "resp": "RAF", "proof": "Liste des accès signée", "ctrl": "Accès des personnes parties supprimés ; double validation sur les paiements", "prio": "P2"}, {"cat": "Pilotage & contrôle interne", "name": "Délégations de signature et pouvoirs bancaires", "ent": "Toutes entités", "per": "Semestrielle", "ref": "Après chaque changement de dirigeant", "date": "2027-01-31", "crit": "Élevée", "resp": "Direction + RAF", "proof": "Délégations signées, fiches banque", "ctrl": "Seuils de signature cohérents avec l'organisation", "prio": "P2"}, {"cat": "Pilotage & contrôle interne", "name": "Archivage et durées de conservation (comptable, social, dossiers patients)", "ent": "Toutes entités", "per": "Annuelle", "ref": "Purge et archivage au premier trimestre", "date": "2027-03-31", "crit": "Normale", "resp": "RAF", "proof": "Procédure d'archivage, registre de destruction", "ctrl": "Durées respectées ; archives accessibles pour un contrôle", "prio": "P3"}], "cats": ["Social & RH", "Santé & sécurité", "Réglementaire clinique", "Fiscal", "Juridique & gouvernance", "Assurances & contrats", "Pilotage & contrôle interne"], "plan": [{"when": "Semaine 1-2", "act": "Inventorier les entités, les contrats, les polices et les accès (PayFit, banque, impôts, URSSAF)", "gain": "Base de départ complète pour le registre", "who": "Dirigeante, expert-comptable"}, {"when": "Semaine 1-2", "act": "Vérifier le dépôt des comptes N-1 et N-2 de chaque entité", "gain": "Seul sujet pouvant déjà être en infraction ; régularisation immédiate si besoin", "who": "Greffe, expert-comptable"}, {"when": "Semaine 2-4", "act": "Lancer la mise à jour du DUERP et l'état des lieux du suivi médical", "gain": "Protéger les salariés et la direction ; plan d'actions daté", "who": "Praticiens référents, service de santé"}, {"when": "Semaine 2-4", "act": "Valider avec l'expert-comptable les régimes de TVA et la taxe sur les salaires de chaque entité", "gain": "Éviter une erreur récurrente sur plusieurs mois", "who": "Expert-comptable"}, {"when": "Mois 2", "act": "Mettre en place le circuit mensuel des variables de paie et le contrôle de la DSN", "gain": "Fin de la paie traitée dans l'urgence", "who": "Responsables de clinique"}, {"when": "Mois 2", "act": "Installer la revue mensuelle de comptabilité avec l'expert-comptable", "gain": "Un rendez-vous fixe, un tableau de points ouverts", "who": "Expert-comptable"}, {"when": "Mois 3", "act": "Tableau de bord mensuel pour la direction (trésorerie, chiffre d'affaires, masse salariale, alertes)", "gain": "Une page, lue en 10 minutes", "who": "Dirigeante"}, {"when": "Mois 3", "act": "Arbitrer facturation électronique et assurances", "gain": "Décisions prises avant les échéances de préavis", "who": "Dirigeante"}], "paie": [{"id": "A", "who": "Assistante – 2 400 € brut", "sit": "Arrêt maladie de 5 jours non enregistré", "impact": "Sans correction, le salaire est payé en entier alors que 5 jours sont absents : trop-versé d'environ 554 € brut (2 400 × 5 / 21,67), à nuancer par le maintien de salaire éventuel.", "proof": "Avis d'arrêt de travail (volet employeur) ; date de réception ; nature de l'arrêt (maladie, accident du travail, maternité).", "checks": "Date de début, durée, arrêt initial ou prolongation ; ancienneté et conditions du maintien de salaire ; délai de carence conventionnel ; subrogation ou non ; signalement d'arrêt envoyé par la DSN ; règle d'acquisition des congés pendant l'arrêt dans PayFit.", "fix": "Saisir l'absence avec les dates exactes ; appliquer la méthode de décompte de l'entreprise (jours ouvrés ou calendaires) ; paramétrer le maintien et la subrogation ; vérifier le signalement DSN ; recalculer le net.", "block": "Pas d'arrêt de travail au dossier : retenue prudente de l'absence et relance immédiate du salarié. Maintien et subrogation ne se valident qu'avec le document.", "missing": "Convention collective applicable et conditions de maintien ; méthode de décompte des absences ; existence d'une subrogation.", "when": "J-2"}, {"id": "B", "who": "Secrétaire – 2 200 € brut", "sit": "8 heures supplémentaires non saisies + prime exceptionnelle de 200 €", "impact": "Heures supplémentaires : environ 145 € brut (taux horaire 14,51 € × 1,25 × 8, hypothèse de majoration à 25 %). Prime : 200 € brut. Total à ajouter : environ 345 € brut.", "proof": "Relevé d'heures ou planning signé ; demande ou validation écrite de la direction pour les heures ; décision écrite de la prime avec son motif.", "checks": "Heures réellement au-delà de la durée contractuelle, semaine par semaine ; taux de majoration conventionnel ; paiement ou repos compensateur ; contingent annuel ; traitement social et fiscal des heures supplémentaires dans PayFit ; prime : motif, égalité de traitement, absence de doublon, régime social (soumise, sauf dispositif particulier réuni).", "fix": "Saisir les heures par semaine avec le bon taux ; créer la prime exceptionnelle avec le bon code de rémunération ; vérifier le brut, les cotisations et le net.", "block": "Heures non validées par la direction ou prime sans décision écrite : on ne paie pas avant validation.", "missing": "Majoration prévue par la convention ou un accord d'entreprise ; choix paiement ou repos ; compteur d'heures supplémentaires de l'année.", "when": "J-2"}, {"id": "D", "who": "Assistante – 2 300 € brut", "sit": "Départ le 12 novembre, paie complète générée", "impact": "Trop-versé potentiel de 1 345 à 1 380 € brut : le salaire dû du 1er au 12 novembre représente environ 920 à 955 € selon la méthode de proratisation, contre 2 300 € générés.", "proof": "Lettre de démission ou document de rupture ; date de fin de contrat confirmée par écrit ; solde de congés ; restitution du matériel.", "checks": "Motif et date effective de fin de contrat ; préavis effectué, dispensé ou payé ; solde de congés acquis non pris ; indemnités éventuelles ; primes à proratiser ; reprise d'avances ; clause de non-concurrence ; portabilité de la prévoyance.", "fix": "Annuler la paie complète ; reprendre la paie avec sortie au 12/11 ; calculer l'indemnité de congés (comparaison maintien de salaire / dixième) ; préparer solde de tout compte, certificat de travail et attestation employeur ; DSN de fin de contrat.", "block": "Date de sortie ou motif non confirmés par écrit, solde de congés non validé, documents de sortie non prêts : la paie de sortie ne part pas.", "missing": "Motif de la rupture ; préavis ; solde de congés ; indemnités conventionnelles ; éventuelles primes proratisées.", "when": "J-2 (priorité)"}, {"id": "E", "who": "Secrétaire – 2 100 € brut", "sit": "5 jours de congés payés non enregistrés", "impact": "Pas de trop-versé sur la paie (les congés sont payés), mais le compteur reste surévalué : 5 jours à décompter, soit environ 485 € de passif de congés (2 100 × 5 / 21,67) mal évalué dans la provision.", "proof": "Demande de congés signée ; validation par le responsable de clinique ; planning.", "checks": "Jours demandés et validés ; décompte en jours ouvrables ou ouvrés ; solde suffisant ; congés anticipés éventuels ; chevauchement avec un jour férié ou un arrêt ; sinon congés sans solde (retenue).", "fix": "Saisir les congés dans PayFit sur les bonnes dates ; contrôler le compteur ; mettre à jour la provision de congés payés.", "block": "Aucune demande validée : confirmer avec le responsable si ce sont bien des congés payés ou une absence sans solde.", "missing": "Mode de décompte (ouvrables ou ouvrés) ; solde disponible ; accord sur l'anticipation éventuelle.", "when": "J-1"}], "process": [{"when": "Le 1er du mois", "step": "Calendrier de paie diffusé : date limite des variables, date de validation, date de virement, date de DSN", "who": "RAF", "out": "Calendrier annuel partagé"}, {"when": "Le 15 (J-9)", "step": "Rappel automatique aux responsables de clinique avec la fiche de variables pré-remplie", "who": "RAF", "out": "Fiche de variables"}, {"when": "Le 20 (J-4)", "step": "Date limite de remise des variables : absences, heures supplémentaires, primes, entrées, sorties, changements de situation", "who": "Responsables de clinique", "out": "Fiche signée et justificatifs"}, {"when": "J-4 à J-3", "step": "Contrôle de complétude, saisie dans PayFit, pré-paie, rapport d'écarts", "who": "RAF", "out": "Pré-paie et rapport d'écarts"}, {"when": "J-2", "step": "Traitement des anomalies : relance des justificatifs, arbitrages avec la direction, corrections", "who": "RAF + Direction", "out": "Tableau d'anomalies"}, {"when": "J-1", "step": "Revue finale : masse salariale, net à payer, charges, cas particuliers ; validation par la direction", "who": "RAF → Direction", "out": "Visa de validation"}, {"when": "J", "step": "Validation de la paie dans PayFit ; contrôle du fichier de virements avant transmission à la banque", "who": "RAF + Dirigeante", "out": "Fichier SEPA contrôlé"}, {"when": "J+1 à J+3", "step": "Envoi des bulletins ; transmission à l'expert-comptable du journal de paie, de l'état des charges et de la provision de congés", "who": "RAF", "out": "Écritures de paie"}, {"when": "Avant le 5 ou le 15", "step": "DSN : pré-contrôles PayFit, rapprochement avec les bulletins, dépôt", "who": "RAF", "out": "Rapport de pré-contrôle"}, {"when": "Dépôt + 48 h", "step": "Lecture du compte rendu de la DSN, traitement des anomalies, archivage de l'accusé", "who": "RAF", "out": "Compte rendu DSN"}, {"when": "Date de prélèvement", "step": "Contrôle du montant prélevé (cotisations, prélèvement à la source) par rapport au bilan DSN ; rapprochement bancaire", "who": "RAF", "out": "Relevé bancaire"}, {"when": "M+1", "step": "Rapprochement paie / comptabilité : personnel, organismes sociaux, charges de personnel, provisions", "who": "RAF + Expert-comptable", "out": "Balance rapprochée"}, {"when": "M+1", "step": "Indicateurs RH remontés à la direction : absentéisme, heures supplémentaires, entrées-sorties, masse salariale", "who": "RAF", "out": "Tableau de bord"}], "ctrlpaie": [{"a": "Complétude des variables", "b": "Toutes les variables du mois sont reçues, signées par le responsable de clinique, et rapprochées des plannings.", "c": "Fiche de variables mensuelle"}, {"a": "Cohérence individuelle", "b": "Écart brut et net par salarié par rapport au mois précédent supérieur à 10 % : explication écrite.", "c": "Rapport d'écarts PayFit"}, {"a": "Entrées et sorties", "b": "Chaque entrée a une déclaration préalable à l'embauche et un contrat signé ; chaque sortie a ses documents et son signalement.", "c": "Dossier salarié"}, {"a": "Absences", "b": "Chaque absence a son justificatif ; chaque arrêt est signalé.", "c": "Arrêts, demandes de congés"}, {"a": "Minimum conventionnel et légal", "b": "Aucun salaire sous le minimum conventionnel ni le minimum légal.", "c": "Grille conventionnelle"}, {"a": "Masse salariale", "b": "Masse salariale brute et nette comparée au mois précédent et au budget ; charges patronales en pourcentage du brut.", "c": "Journal de paie"}, {"a": "Paramétrage de PayFit", "b": "Taux de cotisation, mutuelle, prévoyance, prélèvement à la source, conformes aux contrats.", "c": "Contrats d'assurance"}, {"a": "Double regard", "b": "Deux personnes interviennent : une prépare, une valide (RAF puis direction).", "c": "Visa de validation"}, {"a": "Virements", "b": "Fichier de virements rapproché du total des nets ; validation par le dirigeant avant envoi.", "c": "Fichier SEPA"}, {"a": "Déclaration", "b": "DSN rapprochée des bulletins (effectif, brut, cotisations, prélèvement à la source) avant dépôt.", "c": "Bilan DSN"}], "check": [{"bloc": "Transmission", "act": "Envoyer les relevés bancaires de tous les comptes", "det": "Tous comptes de toutes les entités, y compris comptes de dépôt et de carte", "when": "J+3", "who": "RAF", "proof": "Relevés ou flux bancaires", "seuil": "Compte manquant"}, {"bloc": "Transmission", "act": "Envoyer les factures d'achat et de frais, avec visa de validation", "det": "Chaque facture porte la mention de l'entité, de la clinique et du bon à payer", "when": "J+3", "who": "Responsables de clinique + RAF", "proof": "Factures visées", "seuil": "Facture sans visa"}, {"bloc": "Transmission", "act": "Transmettre les journaux de ventes et d'encaissements", "det": "Extraction du logiciel de gestion : actes, encaissements patients, tiers payant, mutuelles, espèces", "when": "J+3", "who": "RAF", "proof": "Journaux et états d'encaissement", "seuil": "Écart avec le logiciel"}, {"bloc": "Transmission", "act": "Transmettre le journal de paie, l'état des charges et la DSN", "det": "Après validation de la paie", "when": "J+3", "who": "RAF", "proof": "Journal de paie, bilan DSN", "seuil": "Paie non transmise"}, {"bloc": "Transmission", "act": "Signaler les opérations particulières du mois", "det": "Investissements, emprunts, nouveaux contrats, litiges, mouvements de capital, refacturations intragroupe", "when": "J+3", "who": "RAF", "proof": "Note de synthèse", "seuil": "Opération non documentée"}, {"bloc": "Demande à l'expert-comptable", "act": "Demander la balance générale et les balances auxiliaires clients et fournisseurs", "det": "Avec le grand livre des comptes sensibles", "when": "J+8", "who": "Expert-comptable", "proof": "Balances au format convenu", "seuil": "Livraison en retard"}, {"bloc": "Demande à l'expert-comptable", "act": "Demander l'état de rapprochement bancaire et la liste des comptes d'attente", "det": "Suspens expliqués ligne par ligne", "when": "J+8", "who": "Expert-comptable", "proof": "État de rapprochement", "seuil": "Suspens au-delà de 30 jours"}, {"bloc": "Demande à l'expert-comptable", "act": "Demander le projet de déclaration de TVA avec sa justification", "det": "Chiffre d'affaires par taux, TVA déductible par nature", "when": "J+10", "who": "Expert-comptable", "proof": "Projet de déclaration", "seuil": "Écart avec les ventes"}, {"bloc": "Contrôle", "act": "Banque : rapprochement de chaque compte", "det": "Solde comptable = solde bancaire ; chaque suspens daté et expliqué", "when": "J+10", "who": "RAF", "proof": "État de rapprochement", "seuil": "Suspens non justifié"}, {"bloc": "Contrôle", "act": "Caisse : comptage et comparaison avec les écritures", "det": "Plafond d'espèces respecté, remise en banque tracée", "when": "J+10", "who": "Responsables de clinique", "proof": "PV de caisse", "seuil": "Écart de caisse"}, {"bloc": "Contrôle", "act": "Clients : balance âgée, lettrage, tiers payant en attente", "det": "Remboursements de l'assurance maladie et des mutuelles rapprochés des actes", "when": "J+10", "who": "RAF", "proof": "Balance âgée", "seuil": "Créance de plus de 60 jours"}, {"bloc": "Contrôle", "act": "Fournisseurs : doublons, factures non parvenues, échéances", "det": "Relevés des principaux fournisseurs rapprochés du compte", "when": "J+10", "who": "RAF", "proof": "Balance fournisseurs", "seuil": "Doublon ou facture échue"}, {"bloc": "Contrôle", "act": "Chiffre d'affaires : logiciel de gestion rapproché de la comptabilité", "det": "Par clinique et par praticien, avec les ventes de produits et prestations facturées", "when": "J+10", "who": "RAF", "proof": "Rapport de rapprochement", "seuil": "Écart supérieur à 1 %"}, {"bloc": "Contrôle", "act": "Paie : comptabilité, DSN et prélèvements rapprochés", "det": "Comptes de personnel et d'organismes sociaux soldés ou expliqués", "when": "J+10", "who": "RAF", "proof": "Balance rapprochée", "seuil": "Solde inexpliqué"}, {"bloc": "Contrôle", "act": "TVA : déclaration rapprochée des journaux et de la balance", "det": "Comptes de TVA collectée et déductible justifiés", "when": "J+12", "who": "RAF", "proof": "Justification de TVA", "seuil": "Écart non expliqué"}, {"bloc": "Contrôle", "act": "Impôts et taxes : acomptes, taxe sur les salaires, CFE", "det": "Paiements du mois rapprochés du calendrier fiscal", "when": "J+12", "who": "RAF", "proof": "Avis et paiements", "seuil": "Échéance non provisionnée"}, {"bloc": "Contrôle", "act": "Emprunts et leasing : échéances et intérêts", "det": "Écritures rapprochées des tableaux d'amortissement", "when": "J+12", "who": "RAF", "proof": "Échéanciers", "seuil": "Écart d'échéance"}, {"bloc": "Contrôle", "act": "Immobilisations : acquisitions du mois", "det": "Immobilisation ou charge ? Matériel facturé = matériel reçu", "when": "J+12", "who": "RAF", "proof": "Factures et bons de livraison", "seuil": "Achat important non immobilisé"}, {"bloc": "Contrôle", "act": "Comptes d'attente et écritures manuelles", "det": "Aucune écriture manuelle significative sans justificatif", "when": "J+12", "who": "RAF", "proof": "Liste des écritures", "seuil": "Écriture inhabituelle"}, {"bloc": "Contrôle", "act": "Flux intragroupe : comptes courants et refacturations", "det": "Soldes réciproques identiques dans les deux entités", "when": "J+12", "who": "RAF", "proof": "Tableau des flux", "seuil": "Soldes différents"}, {"bloc": "Contrôle", "act": "Charges à payer et produits à recevoir de fin de mois", "det": "Charges connues et non facturées ; produits non facturés", "when": "J+12", "who": "RAF + Expert-comptable", "proof": "Liste des provisions", "seuil": "Écart avec le mois précédent"}, {"bloc": "Remontée à la direction", "act": "Trésorerie : solde, prévision à 13 semaines et échéances fiscales et sociales", "det": "Un point par entité et pour le groupe", "when": "J+15", "who": "RAF", "proof": "Tableau de trésorerie", "seuil": "Trésorerie inférieure à 1 mois de charges fixes"}, {"bloc": "Remontée à la direction", "act": "Chiffre d'affaires et marge par clinique, comparés au budget et à l'année précédente", "det": "Actes, panier moyen, praticiens", "when": "J+15", "who": "RAF", "proof": "Tableau de bord", "seuil": "Écart supérieur à 10 %"}, {"bloc": "Remontée à la direction", "act": "Masse salariale rapportée au chiffre d'affaires", "det": "Heures supplémentaires et absentéisme inclus", "when": "J+15", "who": "RAF", "proof": "Tableau de bord", "seuil": "Ratio en hausse sur 2 mois"}, {"bloc": "Remontée à la direction", "act": "Délais d'encaissement et impayés (patients, tiers payant, mutuelles)", "det": "Créances anciennes, rejets", "when": "J+15", "who": "RAF", "proof": "Balance âgée", "seuil": "Dégradation sur 2 mois"}, {"bloc": "Remontée à la direction", "act": "Dettes fournisseurs échues, crédit ou dette de TVA, comptes d'attente", "det": "Les trois points sensibles du mois", "when": "J+15", "who": "RAF", "proof": "Tableau de bord", "seuil": "Montant en hausse"}, {"bloc": "Remontée à la direction", "act": "Retards de transmission et points ouverts avec l'expert-comptable", "det": "Qui doit quoi, avant quelle date", "when": "J+15", "who": "RAF", "proof": "Tableau de points ouverts", "seuil": "Point ouvert depuis 2 mois"}], "mois": ["Janv", "Févr", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"], "cal": [{"lab": "TVA : déclaration et paiement par entité", "m": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "ctrl": "Contrôles avant validation ; revue des entités à activité mixte", "typ": "Fiscal"}, {"lab": "DSN et cotisations sociales", "m": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "ctrl": "Rapprochement bulletins / DSN / prélèvements", "typ": "Social"}, {"lab": "Revue mensuelle de comptabilité avec l'expert-comptable", "m": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "ctrl": "Checklist mensuelle, points ouverts", "typ": "Comptable"}, {"lab": "Prévisionnel de trésorerie à 13 semaines", "m": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "ctrl": "Écart prévu / réel", "typ": "Pilotage"}, {"lab": "Taxe sur les salaires annuelle (si applicable)", "m": [1], "ctrl": "Calcul rapproché de la paie annuelle", "typ": "Fiscal"}, {"lab": "Régularisation du coefficient de déduction de TVA", "m": [12, 1], "ctrl": "Recalcul du chiffre d'affaires taxable / total", "typ": "Fiscal"}, {"lab": "Inventaire de fin d'année : stocks, immobilisations, caisse", "m": [12, 1], "ctrl": "Instructions aux cliniques ; comptages signés", "typ": "Clôture"}, {"lab": "Circularisation : banques, principaux fournisseurs et clients", "m": [1, 2], "ctrl": "Soldes confirmés par écrit", "typ": "Clôture"}, {"lab": "Provisions : congés payés, créances douteuses, litiges, indemnités de fin de carrière", "m": [1, 2], "ctrl": "Calculs justifiés ; validation par la direction", "typ": "Clôture"}, {"lab": "Acomptes d'impôt sur les sociétés (15/03, 15/06, 15/09, 15/12)", "m": [3, 6, 9, 12], "ctrl": "Montant cohérent avec le résultat estimé", "typ": "Fiscal"}, {"lab": "Arrêtés intermédiaires et bilan provisoire", "m": [3], "ctrl": "Revue analytique N / N-1 avec l'expert-comptable", "typ": "Clôture"}, {"lab": "Arrêté des comptes par la direction", "m": [4], "ctrl": "Dossier complet circulé 10 jours avant", "typ": "Clôture"}, {"lab": "Liasse fiscale, déclaration de résultats, déclaration des honoraires", "m": [5], "ctrl": "Relecture avant signature", "typ": "Fiscal"}, {"lab": "Solde de l'impôt sur les sociétés (15 mai)", "m": [5], "ctrl": "Solde = impôt − acomptes", "typ": "Fiscal"}, {"lab": "Clôture de la période de congés payés", "m": [5, 6], "ctrl": "Compteurs, plan de prise, provision", "typ": "Social"}, {"lab": "Approbation des comptes en assemblée (avant le 30 juin)", "m": [6], "ctrl": "Convocations, PV signé", "typ": "Juridique"}, {"lab": "Cotisation foncière des entreprises : acompte (15 juin) et solde (15 décembre)", "m": [6, 12], "ctrl": "Avis rapproché des locaux", "typ": "Fiscal"}, {"lab": "Dépôt des comptes au greffe", "m": [7], "ctrl": "Récépissé archivé ; vérification un mois après", "typ": "Juridique"}, {"lab": "Revue de mi-année : budget révisé, assurances, contrats", "m": [7, 9], "ctrl": "Écarts budget / réel", "typ": "Pilotage"}, {"lab": "Budget de l'année suivante et plan d'investissement", "m": [9, 10, 11], "ctrl": "Hypothèses validées par la direction", "typ": "Pilotage"}, {"lab": "Préavis de résiliation des assurances et contrats", "m": [10, 11], "ctrl": "Mise en concurrence décidée avant la fenêtre", "typ": "Assurances"}, {"lab": "Lancement de la clôture : réunion avec l'expert-comptable et simulation du résultat", "m": [11], "ctrl": "Calendrier, liste des pièces, responsabilités", "typ": "Clôture"}, {"lab": "DUERP, suivi médical, formations : revue annuelle", "m": [11, 12], "ctrl": "Registre des obligations à jour", "typ": "Social"}, {"lab": "Facturation électronique : réception depuis septembre 2026, émission en septembre 2027", "m": [9], "ctrl": "Plateforme choisie ; circuit de validation adapté", "typ": "Fiscal"}], "clot": [{"when": "Novembre – décembre", "what": "Lancement : réunion avec l'expert-comptable (calendrier, liste de pièces, points d'attention de l'année) ; simulation du résultat à fin octobre ou novembre.", "who": "RAF + Expert-comptable"}, {"when": "Fin décembre", "what": "Instructions de fin d'année aux cliniques : stocks, caisse, immobilisations, factures à établir et à recevoir.", "who": "RAF + Responsables de clinique"}, {"when": "Janvier", "what": "Comptages, circularisation des banques et des principaux tiers, régularisation de la TVA, taxe sur les salaires annuelle.", "who": "RAF"}, {"when": "Février", "what": "Calcul et justification des provisions (congés, créances, litiges), revue des comptes de tiers, rapprochement des flux intragroupe.", "who": "RAF + Expert-comptable"}, {"when": "Mars", "what": "Balance de pré-bilan, revue analytique N / N-1, liste écrite des questions, réunion de revue avec l'expert-comptable ; acompte d'impôt.", "who": "RAF + Expert-comptable"}, {"when": "Avril", "what": "Bilan provisoire, présentation à la direction, arbitrages (provisions, amortissements, distribution), arrêté des comptes.", "who": "Direction + RAF"}, {"when": "Mai", "what": "Liasse fiscale, déclarations, solde de l'impôt.", "who": "Expert-comptable + RAF"}, {"when": "Juin – juillet", "what": "Approbation en assemblée, dépôt au greffe, récépissé archivé, vérification du dépôt.", "who": "Direction + RAF"}], "tva": [{"a": "Qualification des opérations", "b": "Chaque produit est classé : soins exonérés, prestations imposables (actes sans finalité thérapeutique, ventes de produits, refacturations et prestations intragroupe), avec le bon taux.", "c": "Actes facturés"}, {"a": "Chiffre d'affaires", "b": "Bases déclarées (exonérée, taux normal, autres taux) rapprochées de la comptabilité et du logiciel de gestion, entité par entité.", "c": "Journaux de ventes"}, {"a": "Fait générateur", "b": "Règle d'exigibilité vérifiée (encaissement ou facturation) selon la nature des opérations et l'option de l'entité.", "c": "Règle de l'entité"}, {"a": "TVA déductible", "b": "Factures conformes (mentions, destinataire, date) ; exclusion des dépenses non déductibles ; vérification de l'affectation des achats.", "c": "Factures d'achat"}, {"a": "Achats mixtes", "b": "Achats communs à l'activité taxable et à l'activité exonérée : application du coefficient de déduction ; achats exclusivement exonérés : aucune déduction.", "c": "Clé de répartition"}, {"a": "Cohérence", "b": "TVA collectée / bases taxables proche du taux ; aucune TVA sur les ventes exonérées ; ratio TVA déductible / achats vraisemblable.", "c": "Test de cohérence"}, {"a": "Comparaison", "b": "Écart avec le mois précédent et l'année précédente ; explication de toute variation importante ou d'un crédit inhabituel.", "c": "Analyse d'écarts"}, {"a": "Rapprochement", "b": "Comptes de TVA de la balance égaux à la déclaration ; crédit reporté de la période précédente repris.", "c": "Balance"}, {"a": "Opérations particulières", "b": "Prestations reçues de l'étranger (autoliquidation), immobilisations (régularisations), opérations intragroupe.", "c": "Contrats et factures"}, {"a": "Validation", "b": "Préparation par l'expert-comptable, relecture par le RAF, validation par la direction ; dépôt dans les délais, accusé conservé ; paiement ou demande de remboursement suivis.", "c": "Accusé de dépôt"}]};
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n);
+const fdate=iso=>iso.split('-').reverse().join('/');
+
+/* ---------- navigation ---------- */
+const slides=$$('.slide'); const ids=slides.map(s=>s.id); let cur=0;
+const nav=$('#nav'); nav.appendChild(el('span','brand','Sana Oris · Étude de cas'));
+slides.forEach((s,i)=>{const b=el('button','tab',esc(s.dataset.title));b.addEventListener('click',()=>go(i));nav.appendChild(b)});
+function go(i,noHash){cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+  $$('.tab').forEach((t,k)=>t.setAttribute('aria-current',k===cur?'true':'false'));
+  const t=$$('.tab')[cur]; if(t&&t.scrollIntoView) t.scrollIntoView({block:'nearest',inline:'center'});
+  if(!noHash){try{history.replaceState(null,'','#'+ids[cur])}catch(e){location.hash=ids[cur]}}
+  window.scrollTo(0,0)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(+b.dataset.go)});
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
+  if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+function fromHash(){const h=location.hash.slice(1);const i=ids.indexOf(h);go(i>=0?i:0,true)}
+window.addEventListener('hashchange',fromHash);
+
+/* ---------- 01 registre interactif ---------- */
+const ALERT={'Critique':30,'Élevée':21,'Normale':14};
+const KEY='sanaoris-registre-v1';
+const STS=[['En retard','retard'],['À traiter','traiter'],['Planifié','planifie'],['À planifier','aplanifier'],['En cours','encours'],['Bloqué','bloque'],['Fait','fait']];
+const slug=s=>STS.find(x=>x[0]===s)[1];
+const isoOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+let ST={mod:{},custom:[],n:0};
+try{const r=localStorage.getItem(KEY);if(r)ST=Object.assign(ST,JSON.parse(r))}catch(e){}
+let msgT;function msg(t){const m=$('#savemsg');m.textContent=t;clearTimeout(msgT);msgT=setTimeout(()=>m.textContent='',2500)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(ST));msg('Enregistré dans ce navigateur')}catch(e){msg('Enregistrement local indisponible : vos changements durent le temps de la session')}}
+let refDate=new Date(); refDate.setHours(0,0,0,0);
+const rd=$('#refd'); rd.value=isoOf(refDate);
+rd.addEventListener('change',()=>{const d=new Date(rd.value+'T00:00:00');if(!isNaN(d)){refDate=d;renderObl()}});
+let fCat='Toutes',fSt='Tous',open=null;
+const ALL=()=>D.obl.map((o,i)=>Object.assign({id:'b'+i},o)).concat(ST.custom);
+function eff(o){const m=ST.mod[o.id]||{};const date=m.date||o.date;
+  const days=Math.round((new Date(date+'T00:00:00')-refDate)/864e5);
+  let st=m.st; if(!st){st=days<0?'En retard':days<=ALERT[o.crit]?'À traiter':'Planifié'}
+  return {date,days,st,done:st==='Fait',m,resp:m.resp!=null?m.resp:o.resp,note:m.note||''}}
+function setMod(id,patch,keep){ST.mod[id]=Object.assign(ST.mod[id]||{},patch);save();if(!keep)renderObl()}
+function addMonths(iso,n){const d=new Date(iso+'T00:00:00');d.setMonth(d.getMonth()+n);return isoOf(d)}
+function chips(host,list,get,set,after){host.innerHTML='';list.forEach(v=>{const b=el('button','chip',esc(v));b.type='button';
+  b.setAttribute('aria-pressed',get()===v);b.addEventListener('click',()=>{set(v);$$('.chip',host).forEach(c=>c.setAttribute('aria-pressed',c.textContent===v));after()});host.appendChild(b)})}
+chips($('#stchips'),['Tous',...STS.map(x=>x[0])],()=>fSt,v=>fSt=v,()=>renderObl());
+chips($('#catchips'),['Toutes',...D.cats],()=>fCat,v=>fCat=v,()=>renderObl());
+$('#a-cat').innerHTML=D.cats.map(c=>`<option>${esc(c)}</option>`).join('');
+function renderObl(){
+  const rows=ALL().map(o=>({o,e:eff(o)}));
+  const c=k=>rows.filter(r=>r.e.st===k).length, tot=rows.length;
+  $('#kpis').innerHTML=`<div class="kpi"><b>${tot}</b><span>obligations suivies</span></div><div class="kpi ok"><b>${c('Fait')}</b><span>faites</span></div><div class="kpi bad"><b>${c('En retard')}</b><span>en retard</span></div><div class="kpi warn"><b>${c('À traiter')}</b><span>à traiter</span></div><div class="kpi"><b>${c('En cours')+c('Bloqué')}</b><span>en cours ou bloquées</span></div>`;
+  const pct=tot?Math.round(c('Fait')/tot*100):0; $('#opg').textContent=c('Fait')+' / '+tot+' faites ('+pct+' %)'; $('#opb').style.width=pct+'%';
+  const body=$('#obl');body.innerHTML='';
+  rows.filter(r=>(fCat==='Toutes'||r.o.cat===fCat)&&(fSt==='Tous'||r.e.st===fSt))
+   .sort((a,b)=>(a.e.done-b.e.done)||(a.e.days-b.e.days)).forEach(({o,e})=>{
+    const tr=el('tr','row'+(e.done?' isdone':''));
+    tr.innerHTML=`<td><button class="okb" type="button" aria-pressed="${e.done}" aria-label="Marquer « ${esc(o.name)} » comme faite" title="${e.done?'Rouvrir':'Marquer comme faite'}">✓</button></td><td class="t"><b>${esc(o.name)}</b><div class="hint">${esc(o.cat)}${o.id[0]==='c'?' · ajoutée':''}</div></td><td>${esc(o.ent)}</td><td class="mono">${fdate(e.date)}</td><td class="n mono">${e.done?'—':e.days}</td><td></td><td class="mono">${o.prio||'—'}</td>`;
+    tr.querySelector('.okb').addEventListener('click',ev=>{ev.stopPropagation();e.done?setMod(o.id,{st:null,doneOn:null}):setMod(o.id,{st:'Fait',doneOn:isoOf(new Date())})});
+    const sel=el('select','st s-'+slug(e.st));sel.setAttribute('aria-label','Statut de '+o.name);
+    STS.forEach(([l])=>{const op=el('option',null,l);op.value=l;if(l===e.st)op.selected=true;sel.appendChild(op)});
+    sel.addEventListener('click',ev=>ev.stopPropagation());sel.addEventListener('change',()=>setMod(o.id,{st:sel.value,doneOn:sel.value==='Fait'?isoOf(new Date()):null}));
+    tr.children[5].appendChild(sel);
+    tr.tabIndex=0;tr.setAttribute('aria-expanded',open===o.id);
+    const tg=()=>{open=open===o.id?null:o.id;renderObl()};
+    tr.addEventListener('click',tg);tr.addEventListener('keydown',ev=>{if(ev.target===tr&&(ev.key==='Enter'||ev.key===' ')){ev.preventDefault();tg()}});
+    body.appendChild(tr);
+    if(open===o.id){
+      const d=el('tr','det');d.innerHTML=`<td colspan="7"><dl><dt>Périodicité</dt><dd>${esc(o.per)}</dd><dt>Échéance de référence</dt><dd>${esc(o.ref||'—')}</dd><dt>Preuve à archiver</dt><dd>${esc(o.proof||'—')}</dd><dt>Contrôle</dt><dd>${esc(o.ctrl||'—')}</dd>${e.m.doneOn?`<dt>Réalisée le</dt><dd>${fdate(e.m.doneOn)}</dd>`:''}</dl>
+       <div class="ed"><label>Échéance<input type="date" id="e-date" value="${e.date}"></label><label>Responsable<input type="text" id="e-resp" value="${esc(e.resp)}"></label><label>Note<input type="text" id="e-note" value="${esc(e.note)}" placeholder="Ex. attestation reçue le…"></label></div>
+       <div class="acts"><label class="f" for="e-add">Prochaine échéance<select id="e-add"><option value="1">+ 1 mois</option><option value="3">+ 3 mois</option><option value="6">+ 6 mois</option><option value="12" selected>+ 12 mois</option></select></label><button type="button" class="btn sm" id="e-next">Reprogrammer</button><button type="button" class="btn sm" id="e-auto">Statut automatique</button>${o.id[0]==='c'?'<button type="button" class="btn sm danger" id="e-del">Supprimer</button>':''}</div></td>`;
+      d.addEventListener('click',ev=>ev.stopPropagation());body.appendChild(d);
+      $('#e-date',d).addEventListener('change',ev=>{if(ev.target.value)setMod(o.id,{date:ev.target.value,st:e.m.st==='En retard'||e.m.st==='À traiter'?null:e.m.st})});
+      $('#e-resp',d).addEventListener('change',ev=>setMod(o.id,{resp:ev.target.value},true));
+      $('#e-note',d).addEventListener('change',ev=>setMod(o.id,{note:ev.target.value},true));
+      $('#e-next',d).addEventListener('click',()=>setMod(o.id,{date:addMonths(e.date,+$('#e-add',d).value),st:null,doneOn:null}));
+      $('#e-auto',d).addEventListener('click',()=>setMod(o.id,{st:null,doneOn:null}));
+      const del=$('#e-del',d);if(del)del.addEventListener('click',()=>{ST.custom=ST.custom.filter(x=>x.id!==o.id);delete ST.mod[o.id];open=null;save();renderObl()});
+    }
+  });
+  if(!body.children.length)body.innerHTML='<tr><td colspan="7" class="muted">Aucune obligation pour ce filtre.</td></tr>';
+}
+$('#addbtn').addEventListener('click',()=>{const f=$('#addform');f.hidden=!f.hidden;$('#addbtn').setAttribute('aria-expanded',!f.hidden);if(!f.hidden)$('#a-name').focus()});
+$('#addcancel').addEventListener('click',()=>{$('#addform').hidden=true;$('#addbtn').setAttribute('aria-expanded','false')});
+$('#addform').addEventListener('submit',ev=>{ev.preventDefault();
+  const n=$('#a-name').value.trim();if(!n||!$('#a-date').value)return;
+  ST.n=(ST.n||0)+1;ST.custom.push({id:'c'+ST.n,cat:$('#a-cat').value,name:n,ent:$('#a-ent').value,per:$('#a-per').value,ref:'',date:$('#a-date').value,crit:$('#a-crit').value,resp:$('#a-resp').value,proof:'',ctrl:'',prio:''});
+  $('#addform').reset();$('#a-resp').value='RAF';$('#a-per').value='Annuelle';$('#addform').hidden=true;$('#addbtn').setAttribute('aria-expanded','false');save();renderObl()});
+let rsT;$('#resetbtn').addEventListener('click',()=>{const b=$('#resetbtn');
+  if(b.dataset.arm){clearTimeout(rsT);delete b.dataset.arm;b.textContent='Réinitialiser mes modifications';ST={mod:{},custom:[],n:0};open=null;save();renderObl();return}
+  b.dataset.arm=1;b.textContent='Confirmer : tout effacer ?';rsT=setTimeout(()=>{delete b.dataset.arm;b.textContent='Réinitialiser mes modifications'},4000)});
+$('#csvbtn').addEventListener('click',()=>{
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const head=['Catégorie','Obligation','Entité','Périodicité','Échéance','Criticité','Statut','Responsable','Réalisée le','Note'];
+  const lines=[head.map(q).join(';')].concat(ALL().map(o=>{const e=eff(o);return [o.cat,o.name,o.ent,o.per,fdate(e.date),o.crit,e.st,e.resp,e.m.doneOn?fdate(e.m.doneOn):'',e.note].map(q).join(';')}));
+  try{const blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='registre-obligations.csv';document.body.appendChild(a);a.click();a.remove();msg('Fichier CSV généré')}
+  catch(e){msg('Export indisponible dans cet affichage : ouvrez la page dans un onglet du navigateur')}});
+renderObl();
+
+/* ---------- plan ---------- */
+D.plan.forEach(p=>$('#plansteps').appendChild(el('div','step',`<div class="when">${esc(p.when)}</div><div><b>${esc(p.act)}</b><small>${esc(p.gain)}</small></div>`)));
+
+/* ---------- paie ---------- */
+const ORDER={D:1,A:2,B:3,E:4}; let curP='D';
+function renderPaie(){
+  const host=$('#pcards');host.innerHTML='';
+  D.paie.slice().sort((a,b)=>ORDER[a.id]-ORDER[b.id]).forEach(p=>{
+    const b=el('button','pc',`<span class="ord">Priorité ${ORDER[p.id]}</span><span class="id">${p.id}</span><b>${esc(p.who)}</b><span class="muted">${esc(p.sit)}</span>`);
+    b.type='button';b.setAttribute('aria-pressed',p.id===curP);b.addEventListener('click',()=>{curP=p.id;renderPaie()});host.appendChild(b)});
+  const p=D.paie.find(x=>x.id===curP);
+  $('#pdetail').innerHTML=`<div class="card full"><h3>Risque et impact</h3><p>${esc(p.impact)}</p></div>
+   <div class="card"><h3>Justificatifs</h3><p>${esc(p.proof)}</p></div><div class="card"><h3>Vérifications</h3><p>${esc(p.checks)}</p></div>
+   <div class="card"><h3>Corrections dans PayFit</h3><p>${esc(p.fix)}</p></div><div class="card block"><h3>Blocage avant validation</h3><p>${esc(p.block)}</p></div>
+   <div class="card full"><h3>À confirmer</h3><p>${esc(p.missing)}</p></div>`;
+}
+renderPaie();
+
+/* ---------- process ---------- */
+D.process.forEach(p=>$('#tl').appendChild(el('div','ti',`<div class="t">${esc(p.when)}</div><div><b>${esc(p.step)}</b></div><div class="who">${esc(p.who)} · ${esc(p.out)}</div>`)));
+D.ctrlpaie.forEach(c=>{const d=el('details','ctl',`<summary>${esc(c.a)}</summary><p>${esc(c.b)}</p>`);$('#ctrlpaie').appendChild(d)});
+
+/* ---------- checklist ---------- */
+const blocs=[...new Set(D.check.map(c=>c.bloc))]; let fBloc='Tous'; const done=new Set();
+chips($('#blocchips'),['Tous',...blocs],()=>fBloc,v=>fBloc=v,()=>renderCl());
+function renderCl(){const host=$('#cl');host.innerHTML='';
+  D.check.forEach((c,i)=>{if(fBloc!=='Tous'&&c.bloc!==fBloc)return;
+    const r=el('label','ci'+(done.has(i)?' done':''),`<input type="checkbox" id="ck${i}" ${done.has(i)?'checked':''}><div><b>${esc(c.act)}</b><small>${esc(c.det)}</small><small>Justificatif : ${esc(c.proof)} · Alerte : ${esc(c.seuil)} · ${esc(c.who)}</small></div><span class="when-badge">${esc(c.when)}</span>`);
+    r.querySelector('input').addEventListener('change',e=>{e.target.checked?done.add(i):done.delete(i);renderCl()});host.appendChild(r)});
+  $('#pgt').textContent=done.size+' / '+D.check.length;$('#pgb').style.width=(done.size/D.check.length*100)+'%'}
+renderCl();
+
+/* ---------- calendrier ---------- */
+const TYPES=[...new Set(D.cal.map(c=>c.typ))]; let fTyp='Tous';
+const th=$('#typchips');
+['Tous',...TYPES].forEach(v=>{const b=el('button','chip',(v==='Tous'?'':`<span class="sw t-${v}"></span>`)+esc(v));b.type='button';b.dataset.v=v;b.setAttribute('aria-pressed',v===fTyp);
+  b.addEventListener('click',()=>{fTyp=v;$$('.chip',th).forEach(c=>c.setAttribute('aria-pressed',c.dataset.v===v));renderCal()});th.appendChild(b)});
+function renderCal(){const host=$('#cal');host.innerHTML='<div></div>'+D.mois.map(m=>`<div class="h">${m}</div>`).join('');
+  D.cal.filter(c=>fTyp==='Tous'||c.typ===fTyp).forEach(c=>{host.appendChild(el('div','l',`${esc(c.lab)}<small>${esc(c.ctrl)}</small>`));
+    for(let m=1;m<=12;m++){const on=c.m.includes(m);host.appendChild(el('div','c'+(on?' x t-'+c.typ:''),''))}})}
+renderCal();
+D.clot.forEach(p=>$('#clot').appendChild(el('div','step',`<div class="when">${esc(p.when)}</div><div><b>${esc(p.what)}</b><small>${esc(p.who)}</small></div>`)));
+
+/* ---------- TVA ---------- */
+D.tva.forEach(c=>$('#tvactl').appendChild(el('details','ctl',`<summary>${esc(c.a)}</summary><p>${esc(c.b)}</p>`)));
+function calc(){const v=+$('#i-v').value||0,a=+$('#i-a').value||0,t=+$('#i-t').value;
+  const hv=v/(1+t),c=v-hv,ha=a/(1+t),d=a-ha,n=c-d;
+  $('#oc').textContent=eur(c);$('#od').textContent=eur(d);$('#ov').textContent=eur(hv);$('#oa').textContent=eur(ha);
+  $('#rv').textContent=eur(Math.abs(n));
+  $('#rl').textContent=n>0?'TVA à payer':n<0?'Crédit de TVA':'Solde nul';
+  $('#rs').textContent=n<0?'À reporter ou à demander en remboursement':n>0?'À payer avec la déclaration':'Rien à payer';
+  const mx=Math.max(c,d,1);$('#b1').style.height=(c/mx*100)+'%';$('#b2').style.height=(d/mx*100)+'%';
+  $('#trap').innerHTML=`<b>Erreur fréquente :</b> appliquer ${Math.round(t*1000)/10} % au montant TTC donnerait ${eur(v*t)} collectés et ${eur(a*t)} déductibles. Le TTC se divise par ${(1+t).toLocaleString('fr-FR')}.`}
+['i-exo','i-v','i-a','i-t'].forEach(i=>$('#'+i).addEventListener('input',calc));calc();
+
+fromHash();
+</script>
+</body></html>

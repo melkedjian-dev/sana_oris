@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Présentation RAF Sana Oris</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Présentation en diapositives 16:9 aux couleurs de Sana Oris : marine #0C1D2C et cuivre #D38D54 */
+:root{--navy:#0C1D2C;--navy2:#12293D;--copper:#D38D54;--copper-d:#A8601F;--ivory:#F5F6F8;--white:#fff;--line:#DDE2E7;--muted:#52606D;--tint:#F8EDE0;
+ --display:"Cormorant Garamond","Iowan Old Style",Georgia,serif;--body:"DM Sans","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:#050E16;color:var(--navy);font-family:var(--body);overflow:hidden}
+#view{position:fixed;inset:0 0 52px 0;overflow:hidden}
+#stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;transform-origin:center center}
+.slide{position:absolute;inset:0;background:var(--ivory);padding:56px 72px;display:none;overflow:hidden}
+.slide.on{display:block;animation:in .35s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.slide.dark{background:var(--navy);color:#F2ECE6}
+.slide::after{content:attr(data-n);position:absolute;right:40px;bottom:22px;font:500 12px var(--mono);color:var(--muted)}
+.slide.dark::after{color:#7C8CA0}
+.eye{font:500 13px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--copper-d)}
+.dark .eye{color:var(--copper)}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.05}
+h2{font-size:52px;font-weight:700;margin:8px 0 26px}
+h3{font-size:25px;font-weight:700}
+p{margin:0;line-height:1.5}
+.big{font-size:104px;font-weight:700;line-height:.98}
+.big em{font-style:normal;color:var(--copper)}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px}
+.card.sm{padding:16px 18px}.card.sm h3{font-size:21px;margin-bottom:6px;color:var(--copper-d)}.card.sm p{font-size:15px}
+.card p{font-size:17px;color:#2B3B4A}
+.card h3{margin-bottom:8px}
+.tag{font:500 12px var(--mono);color:var(--copper-d);background:var(--tint);border-radius:6px;padding:3px 9px;display:inline-block;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tint{background:var(--tint);border-color:var(--tint)}
+ul{margin:0;padding-left:20px;display:grid;gap:9px;font-size:17px;line-height:1.4}
+.note{font-size:14px;color:var(--muted);margin-top:14px}
+/* barres */
+.br{display:grid;grid-template-columns:200px 1fr 30px;gap:12px;align-items:center;margin-bottom:10px;font-size:15px}
+.bt{background:#E6E9ED;border-radius:99px;height:14px;overflow:hidden}.bt i{display:block;height:100%;width:0;background:var(--copper);border-radius:99px;transition:width .8s ease}
+.on .bt i{width:var(--w)}
+/* paie */
+.paie{display:grid;grid-template-columns:560px 1fr;gap:20px}
+.prow{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.prow:hover{border-color:var(--copper)}
+.prow.act{border-color:var(--copper);box-shadow:0 0 0 2px var(--copper) inset}
+.prow:focus-visible,.btn:focus-visible,.proc .st:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--copper);outline-offset:2px}
+.pid{font:700 38px var(--display);color:var(--copper-d)}
+.prow b{display:block;font-size:17px}.prow small{color:var(--muted);font-size:14px}
+.prow em{font:500 11px var(--mono);color:var(--muted);font-style:normal;text-transform:uppercase}
+.pdet{display:grid;gap:9px;align-content:start}
+.pdet .card{padding:14px 18px}.pdet h3{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--copper-d);margin-bottom:5px}
+.pdet p{font-size:14px;line-height:1.4}.pdet .blk{background:#FBE9E9;border-color:#F0C4C4}.pdet .blk h3{color:#9C1C1C}
+/* process */
+.proc{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.proc .st{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;min-height:150px;align-content:start}
+.proc .st:hover,.proc .st.act{border-color:var(--copper);background:var(--tint)}
+.proc .st b{font:700 26px var(--display);color:var(--copper-d)}.proc .st span{font-size:15px}
+/* calendrier */
+.cal{display:grid;grid-template-columns:420px repeat(12,1fr);gap:3px;align-items:center}
+.mh{font:500 11px var(--mono);color:var(--muted);text-align:center}.cl{font-size:14px;line-height:1.2;padding-right:8px}
+.cc{height:24px;border-radius:4px;background:#E6E9ED;opacity:.6}
+.cc[data-c]{opacity:1;cursor:help}
+.t-Fiscal{background:#F0CBA8!important}.t-Social{background:#BFD3E6!important}.t-Comptable{background:#D3D9E8!important}.t-Pilotage{background:#E0D3EC!important}.t-Clôture{background:#F4E3A1!important}.t-Juridique{background:#CFE3C6!important}.t-Assurances{background:#EBCADB!important}
+#calnote{min-height:22px;font-size:15px;color:var(--copper-d);margin-top:12px}
+.cr{display:grid;grid-template-columns:200px 1fr;gap:16px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin-bottom:8px;font-size:15.5px;line-height:1.35}
+.cr b{color:var(--copper-d)}
+/* tva */
+.tva{display:grid;grid-template-columns:420px 1fr;gap:22px}
+.in{display:grid;gap:12px}.in label{display:grid;gap:4px;font-size:14px;color:var(--muted)}
+input,select{font:500 18px var(--body);padding:9px 12px;border:1px solid var(--line);border-radius:8px;color:var(--navy);background:#fff;width:100%}
+.res{background:var(--navy);color:#F2ECE6;border-radius:16px;padding:24px 28px}
+.res .l{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.res .v{font:700 64px var(--display);color:var(--copper);line-height:1}
+.ln{display:flex;justify-content:space-between;border-bottom:1px solid #223A50;padding:10px 0;font-size:18px;font-variant-numeric:tabular-nums}
+.trap{margin-top:12px;background:#FCEBCB;color:#6B3F00;border-radius:10px;padding:12px 14px;font-size:14.5px}
+/* barre du bas */
+#bar{position:fixed;left:0;right:0;bottom:0;height:52px;background:var(--navy);display:flex;align-items:center;gap:10px;padding:0 max(14px,env(safe-area-inset-left,0px));color:#C9D3DD;font:500 13px var(--body);z-index:5}
+#bar .sp{flex:1}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;padding:7px 14px;border-radius:8px;border:1px solid #2A425A;color:#F2ECE6;font:600 13px var(--body)}
+.btn:hover{border-color:var(--copper)}.btn.p{background:var(--copper);color:var(--navy);border-color:var(--copper)}
+#prog{position:fixed;left:0;top:0;height:3px;background:var(--copper);width:0;z-index:6;transition:width .3s}
+#ov{position:fixed;inset:0 0 52px 0;background:rgba(5,14,22,.96);display:none;overflow:auto;padding:24px;z-index:4}
+#ov.on{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;align-content:start}
+#ov button{all:unset;cursor:pointer;background:var(--navy2);color:#F2ECE6;border:1px solid #2A425A;border-radius:10px;padding:14px;font-size:14px;min-height:80px}
+#ov button:hover{border-color:var(--copper)}#ov small{display:block;color:var(--copper);font:500 11px var(--mono);margin-bottom:6px}
+a{color:var(--copper)}
+/* mobile : diapositive en flux continu */
+body.m{overflow:auto}
+body.m #view{position:static;display:block;padding-bottom:64px}
+body.m #stage{width:auto;height:auto;transform:none!important;position:static}
+body.m .slide{position:relative;inset:auto;padding:28px max(18px,env(safe-area-inset-left,0px));min-height:calc(100vh - 52px)}
+body.m .big{font-size:56px}body.m h2{font-size:36px}
+body.m .g3,body.m .g2,body.m .paie,body.m .tva{grid-template-columns:1fr}
+body.m .proc{grid-template-columns:1fr 1fr}
+body.m .br{grid-template-columns:120px 1fr 26px}
+body.m .cal{grid-template-columns:150px repeat(12,18px);overflow-x:auto;min-width:380px}
+body.m .cr{grid-template-columns:1fr}
+body.m .slide::after{display:none}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none}.bt i{transition:none}}
+</style></head>
+<body>
+<div id="prog"></div>
+<div id="view"><div id="stage">
+
+<section class="slide dark" data-t="Titre">
+  <p class="eye" style="margin-top:130px">Sana Oris · Étude de cas</p>
+  <h1 class="big" style="margin:18px 0 34px">Rendre les choses<br><em>prévisibles.</em></h1>
+  <p style="font-size:26px;opacity:.9">Responsable administratif et financier</p>
+  <p style="font-size:18px;opacity:.65;margin-top:8px">Melissa Kedjidjian · Entretien du mardi 10 novembre 2026</p>
+</section>
+
+<section class="slide" data-t="Ma méthode">
+  <p class="eye">Ma façon de travailler</p><h2>Un système, pas une liste</h2>
+  <div class="g3">
+    <div class="card"><h3>Structurer</h3><p>Des échéances qui alertent avant qu'elles arrivent. Un nom en face de chaque obligation.</p></div>
+    <div class="card"><h3>Détecter</h3><p>Des contrôles écrits et répétables. Pas de justificatif, pas de saisie définitive.</p></div>
+    <div class="card"><h3>Piloter</h3><p>Un rythme fixe avec l'expert-comptable, un tableau de bord d'une page pour la direction.</p></div>
+  </div>
+  <div class="card tint" style="margin-top:22px"><h3>Quand je ne sais pas, je le dis</h3><p>Les règles qui dépendent de l'entité ou de la convention collective sont marquées « à confirmer ». Une question posée le premier jour coûte moins qu'une erreur répétée pendant six mois.</p></div>
+</section>
+
+<section class="slide" data-t="01 Registre">
+  <p class="eye">01 · Sécurisation des obligations</p><h2>Un registre qui prévient les oublis</h2>
+  <div class="g2" style="grid-template-columns:1.1fr 1fr">
+    <div><p style="font-size:15px;color:var(--muted);margin-bottom:12px">57 obligations par catégorie</p><div class="br"><span>Social & RH</span><div class="bt"><i style="--w:100%"></i></div><b>14</b></div><div class="br"><span>Santé & sécurité</span><div class="bt"><i style="--w:50%"></i></div><b>7</b></div><div class="br"><span>Réglementaire clinique</span><div class="bt"><i style="--w:57%"></i></div><b>8</b></div><div class="br"><span>Fiscal</span><div class="bt"><i style="--w:71%"></i></div><b>10</b></div><div class="br"><span>Juridique & gouvernance</span><div class="bt"><i style="--w:64%"></i></div><b>9</b></div><div class="br"><span>Assurances & contrats</span><div class="bt"><i style="--w:36%"></i></div><b>5</b></div><div class="br"><span>Pilotage & contrôle interne</span><div class="bt"><i style="--w:29%"></i></div><b>4</b></div></div>
+    <div class="card"><h3>Chaque ligne contient</h3><ul><li>Une échéance et une périodicité</li><li>Un responsable nommé</li><li>La preuve à archiver</li><li>Le contrôle précis à effectuer</li><li>Une priorité d'arrivée : 30 jours, 90 jours, 6 mois</li></ul>
+    <h3 style="margin-top:18px;color:var(--copper-d)">Alerte automatique</h3><p style="font-size:15px">30 jours pour une obligation critique, 21 pour une élevée, 14 pour une normale.</p></div>
+  </div>
+  <p class="note">La version interactive du registre se coche, se filtre et se modifie : lien sur la dernière diapositive.</p>
+</section>
+
+<section class="slide" data-t="01 Ajouts et plan">
+  <p class="eye">01 · Au-delà de l'énoncé</p><h2>Ce que j'ajoute, et par où je commence</h2>
+  <div class="g2">
+    <div class="card"><h3>Obligations ajoutées</h3><ul style="font-size:15.5px"><li>Radioprotection, stérilisation, déchets de soins</li><li>Inscription à l'Ordre et assurance de chaque praticien</li><li>Taxe sur les salaires : à vérifier dès la semaine 1</li><li>Facturation électronique : réception depuis septembre 2026</li><li>Conventions intragroupe et comptes courants</li><li>Données de santé, titres de séjour, formations</li><li>Baux, emprunts, trésorerie à 13 semaines</li></ul></div>
+    <div class="card"><h3>Les 90 premiers jours</h3><ul style="font-size:14.5px;gap:7px"><li><b>Semaine 1-2</b> Inventorier les entités, les contrats, les polices et les accès (PayFit, banque, impôts, URSSAF)</li><li><b>Semaine 1-2</b> Vérifier le dépôt des comptes N-1 et N-2 de chaque entité</li><li><b>Semaine 2-4</b> Lancer la mise à jour du DUERP et l'état des lieux du suivi médical</li><li><b>Semaine 2-4</b> Valider avec l'expert-comptable les régimes de TVA et la taxe sur les salaires de chaque entité</li><li><b>Mois 2</b> Mettre en place le circuit mensuel des variables de paie et le contrôle de la DSN</li><li><b>Mois 2</b> Installer la revue mensuelle de comptabilité avec l'expert-comptable</li><li><b>Mois 3</b> Tableau de bord mensuel pour la direction (trésorerie, chiffre d'affaires, masse salariale, alertes)</li><li><b>Mois 3</b> Arbitrer facturation électronique et assurances</li></ul></div>
+  </div>
+</section>
+
+<section class="slide" data-t="02 Paie">
+  <p class="eye">02 · Fiabilisation de la paie</p><h2>Quatre anomalies, un ordre de traitement</h2>
+  <div class="paie"><div id="prows"><button class="prow" data-i="2"><span class="pid">D</span><span><b>Départ le 12 novembre, paie complète générée</b><small>Assistante – 2 300 € brut</small></span><em>Priorité 1</em></button><button class="prow" data-i="0"><span class="pid">A</span><span><b>Arrêt maladie de 5 jours non enregistré</b><small>Assistante – 2 400 € brut</small></span><em>Priorité 2</em></button><button class="prow" data-i="1"><span class="pid">B</span><span><b>8 heures supplémentaires non saisies + prime exceptionnelle de 200 €</b><small>Secrétaire – 2 200 € brut</small></span><em>Priorité 3</em></button><button class="prow" data-i="3"><span class="pid">E</span><span><b>5 jours de congés payés non enregistrés</b><small>Secrétaire – 2 100 € brut</small></span><em>Priorité 4</em></button></div><div class="pdet" id="pdet"></div></div>
+  <p class="note">Cliquez une situation. Montants indicatifs (21,67 jours ouvrés, 151,67 heures, majoration de 25 % à confirmer) : le calcul définitif se fait dans PayFit.</p>
+</section>
+
+<section class="slide" data-t="02 Process">
+  <p class="eye">02 · Process mensuel</p><h2>De la collecte des variables aux paiements contrôlés</h2>
+  <div class="proc" id="proc"><div class="st"><b>Le 20</b><span>Variables remises, fiche signée</span></div><div class="st"><b>J-4 à J-3</b><span>Contrôle, saisie, pré-paie</span></div><div class="st"><b>J-2</b><span>Anomalies et arbitrages</span></div><div class="st"><b>J-1</b><span>Revue finale, visa de la direction</span></div><div class="st"><b>J</b><span>Validation PayFit, virements contrôlés</span></div><div class="st"><b>J+1 à J+3</b><span>Bulletins, écritures à l'expert-comptable</span></div><div class="st"><b>Avant le 5 ou le 15</b><span>DSN : pré-contrôles, rapprochement, dépôt</span></div><div class="st"><b>Dépôt + 48 h</b><span>Compte rendu lu, anomalies traitées</span></div><div class="st"><b>Prélèvement</b><span>Montant = bilan DSN</span></div><div class="st"><b>M+1</b><span>Rapprochement paie / compta, indicateurs RH</span></div></div>
+  <p class="note" id="procnote">J est le jour de validation de la paie dans PayFit. Cliquez une étape pour la mettre en évidence.</p>
+</section>
+
+<section class="slide" data-t="03 Mensuel">
+  <p class="eye">03 · Contrôle comptable mensuel</p><h2>Alimenter, contrôler, questionner, remonter</h2>
+  <div class="g2"><div class="card"><span class="tag">J+3</span><h3>Transmission</h3><p>Relevés bancaires, factures visées, ventes et encaissements, paie et DSN, opérations particulières</p></div><div class="card"><span class="tag">J+8 à J+10</span><h3>Demande à l'expert-comptable</h3><p>Balances, rapprochement bancaire, comptes d'attente, projet de TVA justifié</p></div><div class="card"><span class="tag">J+10 à J+12</span><h3>Contrôles</h3><p>Banque, caisse, clients et tiers payant, fournisseurs, chiffre d'affaires vs logiciel, paie, TVA, flux intragroupe</p></div><div class="card"><span class="tag">J+15</span><h3>Remontée à la direction</h3><p>Trésorerie, marge par clinique, masse salariale, encaissements, dettes échues, points ouverts</p></div></div>
+  <p class="note">27 contrôles détaillés dans le classeur Excel et dans la version interactive.</p>
+</section>
+
+<section class="slide" data-t="03 Annuel">
+  <p class="eye">03 · Suivi annuel</p><h2 style="margin-bottom:14px">L'année en un coup d'œil</h2>
+  <div class="cal"><div></div><div class="mh">Janv</div><div class="mh">Févr</div><div class="mh">Mars</div><div class="mh">Avr</div><div class="mh">Mai</div><div class="mh">Juin</div><div class="mh">Juil</div><div class="mh">Août</div><div class="mh">Sept</div><div class="mh">Oct</div><div class="mh">Nov</div><div class="mh">Déc</div><div class="cl">Taxe sur les salaires annuelle (si applicable)</div><div class="cc t-Fiscal" data-c="Calcul rapproché de la paie annuelle"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Régularisation du coefficient de déduction de TVA</div><div class="cc t-Fiscal" data-c="Recalcul du chiffre d'affaires taxable / total"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Recalcul du chiffre d'affaires taxable / total"></div><div class="cl">Inventaire de fin d'année : stocks, immobilisations, caisse</div><div class="cc t-Clôture" data-c="Instructions aux cliniques ; comptages signés"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Clôture" data-c="Instructions aux cliniques ; comptages signés"></div><div class="cl">Circularisation : banques, principaux fournisseurs et clients</div><div class="cc t-Clôture" data-c="Soldes confirmés par écrit"></div><div class="cc t-Clôture" data-c="Soldes confirmés par écrit"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Provisions : congés payés, créances douteuses, litiges, indemnités de fin de carrière</div><div class="cc t-Clôture" data-c="Calculs justifiés ; validation par la direction"></div><div class="cc t-Clôture" data-c="Calculs justifiés ; validation par la direction"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Acomptes d'impôt sur les sociétés (15/03, 15/06, 15/09, 15/12)</div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Montant cohérent avec le résultat estimé"></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Montant cohérent avec le résultat estimé"></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Montant cohérent avec le résultat estimé"></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Montant cohérent avec le résultat estimé"></div><div class="cl">Arrêtés intermédiaires et bilan provisoire</div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Clôture" data-c="Revue analytique N / N-1 avec l'expert-comptable"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Arrêté des comptes par la direction</div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Clôture" data-c="Dossier complet circulé 10 jours avant"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Liasse fiscale, déclaration de résultats, déclaration des honoraires</div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Relecture avant signature"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Solde de l'impôt sur les sociétés (15 mai)</div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Solde = impôt − acomptes"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Clôture de la période de congés payés</div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Social" data-c="Compteurs, plan de prise, provision"></div><div class="cc t-Social" data-c="Compteurs, plan de prise, provision"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Approbation des comptes en assemblée (avant le 30 juin)</div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Juridique" data-c="Convocations, PV signé"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cl">Cotisation foncière des entreprises : acompte (15 juin) et solde (15 décembre)</div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Avis rapproché des locaux"></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc" ></div><div class="cc t-Fiscal" data-c="Avis rapproché des locaux"></div></div>
+  <p id="calnote">Passez la souris sur une case pour voir le contrôle associé.</p>
+  <p class="note" style="margin-top:2px">En continu : TVA, DSN, revue comptable mensuelle, trésorerie.</p>
+</section>
+
+<section class="slide" data-t="03 Clôture">
+  <p class="eye">03 · Clôture annuelle</p><h2>Un rétroplanning, de novembre à juillet</h2>
+  <div class="cr"><b>Novembre – décembre</b><span>Lancement : réunion avec l'expert-comptable (calendrier, liste de pièces, points d'attention de l'année) ; simulation du résultat à fin octobre ou novembre.</span></div><div class="cr"><b>Fin décembre</b><span>Instructions de fin d'année aux cliniques : stocks, caisse, immobilisations, factures à établir et à recevoir.</span></div><div class="cr"><b>Janvier</b><span>Comptages, circularisation des banques et des principaux tiers, régularisation de la TVA, taxe sur les salaires annuelle.</span></div><div class="cr"><b>Février</b><span>Calcul et justification des provisions (congés, créances, litiges), revue des comptes de tiers, rapprochement des flux intragroupe.</span></div><div class="cr"><b>Mars</b><span>Balance de pré-bilan, revue analytique N / N-1, liste écrite des questions, réunion de revue avec l'expert-comptable ; acompte d'impôt.</span></div><div class="cr"><b>Avril</b><span>Bilan provisoire, présentation à la direction, arbitrages (provisions, amortissements, distribution), arrêté des comptes.</span></div><div class="cr"><b>Mai</b><span>Liasse fiscale, déclarations, solde de l'impôt.</span></div><div class="cr"><b>Juin – juillet</b><span>Approbation en assemblée, dépôt au greffe, récépissé archivé, vérification du dépôt.</span></div>
+</section>
+
+<section class="slide" data-t="03 TVA">
+  <p class="eye">03 · TVA, cas pratique</p><h2 style="margin-bottom:18px">Un crédit de TVA, pas une dette</h2>
+  <div class="tva">
+    <div class="in">
+      <label for="v">Prestations taxables, TTC (€)<input id="v" type="number" value="5000" step="100"></label>
+      <label for="a">Achats affectés à l'activité taxable, TTC (€)<input id="a" type="number" value="12000" step="100"></label>
+      <label for="t">Taux de TVA<select id="t"><option value="0.2" selected>20 %</option><option value="0.1">10 %</option><option value="0.055">5,5 %</option></select></label>
+      <div class="trap" id="trap"></div>
+      <p class="note" style="margin:0">Les 80 000 € de soins exonérés ne génèrent aucune TVA collectée.</p>
+    </div>
+    <div class="res"><div class="l" id="rl">Crédit de TVA</div><div class="v" id="rv"></div><div id="rs" style="opacity:.8;margin:6px 0 14px"></div>
+      <div class="ln"><span>TVA collectée</span><b id="oc"></b></div><div class="ln"><span>TVA déductible</span><b id="od"></b></div>
+      <div class="ln"><span style="opacity:.7">Ventes hors taxe</span><span id="ov"></span></div><div class="ln"><span style="opacity:.7">Achats hors taxe</span><span id="oa"></span></div>
+      <p style="font-size:14.5px;opacity:.8;margin-top:12px">Calcul correct mais atypique : achats supérieurs à deux fois le chiffre d'affaires taxable. Je documenterais leur affectation exclusive avant tout remboursement.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-t="03 Contrôles TVA">
+  <p class="eye">03 · TVA</p><h2>Avant de valider une déclaration</h2>
+  <div class="g3"><div class="card sm"><h3>Qualification des opérations</h3><p>Chaque produit est classé : soins exonérés, prestations imposables (actes sans finalité thérapeutique, ventes de produits, refacturations et prestations intragroupe), avec le bon taux.</p></div><div class="card sm"><h3>Chiffre d'affaires</h3><p>Bases déclarées (exonérée, taux normal, autres taux) rapprochées de la comptabilité et du logiciel de gestion, entité par entité.</p></div><div class="card sm"><h3>Fait générateur</h3><p>Règle d'exigibilité vérifiée (encaissement ou facturation) selon la nature des opérations et l'option de l'entité.</p></div><div class="card sm"><h3>TVA déductible</h3><p>Factures conformes (mentions, destinataire, date) ; exclusion des dépenses non déductibles ; vérification de l'affectation des achats.</p></div><div class="card sm"><h3>Achats mixtes</h3><p>Achats communs à l'activité taxable et à l'activité exonérée : application du coefficient de déduction ; achats exclusivement exonérés : aucune déduction.</p></div><div class="card sm"><h3>Cohérence</h3><p>TVA collectée / bases taxables proche du taux ; aucune TVA sur les ventes exonérées ; ratio TVA déductible / achats vraisemblable.</p></div></div>
+  <p class="note">Liste complète des dix contrôles dans le classeur Excel.</p>
+</section>
+
+<section class="slide" data-t="Ce que j'apporte">
+  <p class="eye">Pour conclure</p><h2>Ce que j'apporte à Sana Oris</h2>
+  <div class="g3"><div class="card sm"><h3>Anticipation</h3><p>Échéances connues avant d'arriver, trésorerie prévue.</p></div><div class="card sm"><h3>Rigueur</h3><p>Chaque correction a sa pièce, chaque contrôle sa preuve.</p></div><div class="card sm"><h3>Autonomie</h3><p>Je cadre, je priorise, je remonte les décisions.</p></div><div class="card sm"><h3>Relation avec l'expert-comptable</h3><p>Pièces à J+3, retours à J+8, points ouverts suivis.</p></div><div class="card sm"><h3>Pédagogie</h3><p>Une date, une fiche, un nom pour chaque responsable.</p></div><div class="card sm"><h3>Synthèse</h3><p>Une page par mois pour la direction.</p></div></div>
+  <div class="card tint" style="margin-top:20px"><h3>Mes premières semaines</h3><p>Vérifier le dépôt des comptes · lancer le DUERP et le suivi médical · valider TVA et taxe sur les salaires avec l'expert-comptable · installer le circuit mensuel des variables de paie.</p></div>
+</section>
+
+<section class="slide dark" data-t="Merci">
+  <p class="eye" style="margin-top:150px">Pour poursuivre</p>
+  <h1 class="big" style="margin:14px 0 28px">Merci.</h1>
+  <p style="font-size:24px;opacity:.9">Je serais heureuse d'en discuter avec vous.</p>
+  <p style="margin-top:34px;font-size:18px"><a href="index.html">Ouvrir le registre interactif</a> &nbsp;·&nbsp; <a href="Presentation_Sana_Oris_Melissa_Kedjidjian.pptx">Télécharger la version PowerPoint</a></p>
+  <p style="font-size:18px;opacity:.65;margin-top:26px">Melissa Kedjidjian</p>
+</section>
+
+</div></div>
+<div id="ov"></div>
+<div id="bar"><button class="btn" id="prev" aria-label="Diapositive précédente">←</button><button class="btn p" id="next" aria-label="Diapositive suivante">→</button><span id="cnt"></span><span id="ttl" style="margin-left:6px;color:#8EA0B4"></span><span class="sp"></span><button class="btn" id="gridb" aria-expanded="false">Aperçu (G)</button><button class="btn" id="fs">Plein écran (F)</button></div>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const P=[{"impact": "Sans correction, le salaire est payé en entier alors que 5 jours sont absents : trop-versé d'environ 554 € brut (2 400 × 5 / 21,67), à nuancer par le maintien de salaire éventuel.", "proof": "Avis d'arrêt de travail (volet employeur) ; date de réception ; nature de l'arrêt (maladie, accident du travail, maternité).", "fix": "Saisir l'absence avec les dates exactes ; appliquer la méthode de décompte de l'entreprise (jours ouvrés ou calendaires) ; paramétrer le maintien et la subrogation ; vérifier le signalement DSN ; recalculer le net.", "block": "Pas d'arrêt de travail au dossier : retenue prudente de l'absence et relance immédiate du salarié. Maintien et subrogation ne se valident qu'avec le document.", "missing": "Convention collective applicable et conditions de maintien ; méthode de décompte des absences ; existence d'une subrogation.", "id": "A", "sit": "Arrêt maladie de 5 jours non enregistré"}, {"impact": "Heures supplémentaires : environ 145 € brut (taux horaire 14,51 € × 1,25 × 8, hypothèse de majoration à 25 %). Prime : 200 € brut. Total à ajouter : environ 345 € brut.", "proof": "Relevé d'heures ou planning signé ; demande ou validation écrite de la direction pour les heures ; décision écrite de la prime avec son motif.", "fix": "Saisir les heures par semaine avec le bon taux ; créer la prime exceptionnelle avec le bon code de rémunération ; vérifier le brut, les cotisations et le net.", "block": "Heures non validées par la direction ou prime sans décision écrite : on ne paie pas avant validation.", "missing": "Majoration prévue par la convention ou un accord d'entreprise ; choix paiement ou repos ; compteur d'heures supplémentaires de l'année.", "id": "B", "sit": "8 heures supplémentaires non saisies + prime exceptionnelle de 200 €"}, {"impact": "Trop-versé potentiel de 1 345 à 1 380 € brut : le salaire dû du 1er au 12 novembre représente environ 920 à 955 € selon la méthode de proratisation, contre 2 300 € générés.", "proof": "Lettre de démission ou document de rupture ; date de fin de contrat confirmée par écrit ; solde de congés ; restitution du matériel.", "fix": "Annuler la paie complète ; reprendre la paie avec sortie au 12/11 ; calculer l'indemnité de congés (comparaison maintien de salaire / dixième) ; préparer solde de tout compte, certificat de travail et attestation employeur ; DSN de fin de contrat.", "block": "Date de sortie ou motif non confirmés par écrit, solde de congés non validé, documents de sortie non prêts : la paie de sortie ne part pas.", "missing": "Motif de la rupture ; préavis ; solde de congés ; indemnités conventionnelles ; éventuelles primes proratisées.", "id": "D", "sit": "Départ le 12 novembre, paie complète générée"}, {"impact": "Pas de trop-versé sur la paie (les congés sont payés), mais le compteur reste surévalué : 5 jours à décompter, soit environ 485 € de passif de congés (2 100 × 5 / 21,67) mal évalué dans la provision.", "proof": "Demande de congés signée ; validation par le responsable de clinique ; planning.", "fix": "Saisir les congés dans PayFit sur les bonnes dates ; contrôler le compteur ; mettre à jour la provision de congés payés.", "block": "Aucune demande validée : confirmer avec le responsable si ce sont bien des congés payés ou une absence sans solde.", "missing": "Mode de décompte (ouvrables ou ouvrés) ; solde disponible ; accord sur l'anticipation éventuelle.", "id": "E", "sit": "5 jours de congés payés non enregistrés"}];
+const slides=$$('.slide');let cur=0;
+slides.forEach((s,i)=>s.dataset.n=(i+1)+' / '+slides.length);
+function fit(){const m=innerWidth<760;document.body.classList.toggle('m',m);const st=$('#stage');
+  if(m){st.style.transform='';return}
+  const k=Math.min(innerWidth/1280,(innerHeight-52)/720);st.style.transform='translate(-50%,-50%) scale('+k+')'}
+addEventListener('resize',fit);
+function go(i,nohash){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+  $('#cnt').textContent=(cur+1)+' / '+slides.length;$('#ttl').textContent=slides[cur].dataset.t;$('#prog').style.width=((cur+1)/slides.length*100)+'%';
+  if(!nohash){try{history.replaceState(null,'','#s'+(cur+1))}catch(e){}}
+  $('#ov').classList.remove('on');$('#gridb').setAttribute('aria-expanded','false');window.scrollTo(0,0)}
+$('#prev').onclick=()=>go(cur-1);$('#next').onclick=()=>go(cur+1);
+$('#gridb').onclick=()=>{const o=$('#ov');o.classList.toggle('on');$('#gridb').setAttribute('aria-expanded',o.classList.contains('on'))};
+$('#fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+$('#ov').innerHTML=slides.map((s,i)=>`<button data-i="${i}"><small>${i+1}</small>${esc(s.dataset.t)}</button>`).join('');
+$('#ov').onclick=e=>{const b=e.target.closest('button');if(b)go(+b.dataset.i)};
+addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1)}
+  else if(['ArrowLeft','PageUp'].includes(e.key))go(cur-1);
+  else if(e.key==='g'||e.key==='G')$('#gridb').click();else if(e.key==='f'||e.key==='F')$('#fs').click();
+  else if(e.key==='Escape')$('#ov').classList.remove('on')});
+let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+addEventListener('touchend',e=>{if(tx==null||document.body.classList.contains('m'))return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60)go(cur+(d<0?1:-1));tx=null});
+/* paie */
+function showP(i){$$('.prow').forEach(r=>r.classList.toggle('act',+r.dataset.i===i));const p=P[i];
+  $('#pdet').innerHTML=`<div class="card"><h3>Risque et impact</h3><p>${esc(p.impact)}</p></div><div class="card"><h3>Justificatifs</h3><p>${esc(p.proof)}</p></div><div class="card"><h3>Correction dans PayFit</h3><p>${esc(p.fix)}</p></div><div class="card blk"><h3>Blocage avant validation</h3><p>${esc(p.block)}</p></div>`}
+$$('.prow').forEach(r=>r.onclick=()=>showP(+r.dataset.i));showP(P.findIndex(p=>p.id==='D'));
+/* process */
+$$('.proc .st').forEach(s=>{s.tabIndex=0;s.onclick=()=>{$$('.proc .st').forEach(x=>x.classList.toggle('act',x===s));$('#procnote').textContent=s.textContent}});
+/* calendrier */
+$$('.cc[data-c]').forEach(c=>{const f=()=>$('#calnote').textContent='Contrôle associé : '+c.dataset.c;c.onmouseenter=f;c.onclick=f});
+/* tva */
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n);
+function calc(){const v=+$('#v').value||0,a=+$('#a').value||0,t=+$('#t').value;const hv=v/(1+t),c=v-hv,ha=a/(1+t),d=a-ha,n=c-d;
+  $('#oc').textContent=eur(c);$('#od').textContent=eur(d);$('#ov').textContent=eur(hv);$('#oa').textContent=eur(ha);$('#rv').textContent=eur(Math.abs(n));
+  $('#rl').textContent=n>0?'TVA à payer':n<0?'Crédit de TVA':'Solde nul';$('#rs').textContent=n<0?'À reporter ou à demander en remboursement':n>0?'À payer avec la déclaration':'Rien à payer';
+  $('#trap').innerHTML='<b>Erreur fréquente :</b> appliquer '+(t*100).toLocaleString('fr-FR')+' % au montant TTC donnerait '+eur(v*t)+' collectés et '+eur(a*t)+' déductibles. Le TTC se divise par '+(1+t).toLocaleString('fr-FR')+'.'}
+['v','a','t'].forEach(i=>$('#'+i).addEventListener('input',calc));calc();
+fit();const h=parseInt((location.hash.match(/s(\d+)/)||[])[1]);go(h?h-1:0,true);
+addEventListener('hashchange',()=>{const h=parseInt((location.hash.match(/s(\d+)/)||[])[1]);if(h)go(h-1,true)});
+</script></body></html>
