@@ -3,12 +3,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>Présentation RAF Sana Oris</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 /* Présentation en diapositives 16:9 aux couleurs de Sana Oris : marine #0C1D2C et cuivre #D38D54 */
 :root{--navy:#0C1D2C;--navy2:#12293D;--copper:#D38D54;--copper-d:#A8601F;--ivory:#F5F6F8;--white:#fff;--line:#DDE2E7;--muted:#52606D;--tint:#F8EDE0;
- --display:"Cormorant Garamond","Iowan Old Style",Georgia,serif;--body:"DM Sans","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+ --display:"Playfair Display","Iowan Old Style",Georgia,serif;--body:"DM Sans","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
 *{box-sizing:border-box}
+body,h1,h2,h3{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+.res .v,.proc .st b,.pid{font-family:var(--body);font-weight:700;font-variant-numeric:lining-nums tabular-nums}
 html,body{height:100%;margin:0}
 body{background:#050E16;color:var(--navy);font-family:var(--body);overflow:hidden}
 #view{position:fixed;inset:0 0 52px 0;overflow:hidden}
@@ -22,10 +24,10 @@ body{background:#050E16;color:var(--navy);font-family:var(--body);overflow:hidde
 .eye{font:500 13px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--copper-d)}
 .dark .eye{color:var(--copper)}
 h1,h2,h3{font-family:var(--display);margin:0;line-height:1.05}
-h2{font-size:52px;font-weight:700;margin:8px 0 26px}
-h3{font-size:25px;font-weight:700}
+h2{font-size:38px;font-weight:700;margin:8px 0 26px}
+h3{font-size:22px;font-weight:700}
 p{margin:0;line-height:1.5}
-.big{font-size:104px;font-weight:700;line-height:.98}
+.big{font-size:84px;font-weight:700;line-height:1.02}
 .big em{font-style:normal;color:var(--copper)}
 .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px}
 .card.sm{padding:16px 18px}.card.sm h3{font-size:21px;margin-bottom:6px;color:var(--copper-d)}.card.sm p{font-size:15px}
@@ -47,7 +49,7 @@ ul{margin:0;padding-left:20px;display:grid;gap:9px;font-size:17px;line-height:1.
 .prow:hover{border-color:var(--copper)}
 .prow.act{border-color:var(--copper);box-shadow:0 0 0 2px var(--copper) inset}
 .prow:focus-visible,.btn:focus-visible,.proc .st:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--copper);outline-offset:2px}
-.pid{font:700 38px var(--display);color:var(--copper-d)}
+.pid{font-size:34px;color:var(--copper-d)}
 .prow b{display:block;font-size:17px}.prow small{color:var(--muted);font-size:14px}
 .prow em{font:500 11px var(--mono);color:var(--muted);font-style:normal;text-transform:uppercase}
 .pdet{display:grid;gap:9px;align-content:start}
@@ -57,7 +59,7 @@ ul{margin:0;padding-left:20px;display:grid;gap:9px;font-size:17px;line-height:1.
 .proc{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
 .proc .st{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:8px;min-height:150px;align-content:start}
 .proc .st:hover,.proc .st.act{border-color:var(--copper);background:var(--tint)}
-.proc .st b{font:700 26px var(--display);color:var(--copper-d)}.proc .st span{font-size:15px}
+.proc .st b{font-size:24px;color:var(--copper-d)}.proc .st span{font-size:15px}
 /* calendrier */
 .cal{display:grid;grid-template-columns:420px repeat(12,1fr);gap:3px;align-items:center}
 .mh{font:500 11px var(--mono);color:var(--muted);text-align:center}.cl{font-size:14px;line-height:1.2;padding-right:8px}
@@ -73,7 +75,7 @@ ul{margin:0;padding-left:20px;display:grid;gap:9px;font-size:17px;line-height:1.
 input,select{font:500 18px var(--body);padding:9px 12px;border:1px solid var(--line);border-radius:8px;color:var(--navy);background:#fff;width:100%}
 .res{background:var(--navy);color:#F2ECE6;border-radius:16px;padding:24px 28px}
 .res .l{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
-.res .v{font:700 64px var(--display);color:var(--copper);line-height:1}
+.res .v{font-size:60px;color:var(--copper);line-height:1}
 .ln{display:flex;justify-content:space-between;border-bottom:1px solid #223A50;padding:10px 0;font-size:18px;font-variant-numeric:tabular-nums}
 .trap{margin-top:12px;background:#FCEBCB;color:#6B3F00;border-radius:10px;padding:12px 14px;font-size:14.5px}
 /* barre du bas */
@@ -92,7 +94,7 @@ body.m{overflow:auto}
 body.m #view{position:static;display:block;padding-bottom:64px}
 body.m #stage{width:auto;height:auto;transform:none!important;position:static}
 body.m .slide{position:relative;inset:auto;padding:28px max(18px,env(safe-area-inset-left,0px));min-height:calc(100vh - 52px)}
-body.m .big{font-size:56px}body.m h2{font-size:36px}
+body.m .big{font-size:44px}body.m h2{font-size:28px}
 body.m .g3,body.m .g2,body.m .paie,body.m .tva{grid-template-columns:1fr}
 body.m .proc{grid-template-columns:1fr 1fr}
 body.m .br{grid-template-columns:120px 1fr 26px}
